@@ -26,7 +26,7 @@ class QPolargraphSettings(QtGui.QWidget):
 
     @device.setter
     def device(self, device):
-        if hasattr(self, 'device'):
+        if hasattr(self, 'device') and self.device is not None:
             self.disconnectSignals()
             self._properties = []
             logger.info('polargraph hardware disconnected')
@@ -35,8 +35,8 @@ class QPolargraphSettings(QtGui.QWidget):
             self.getProperties()
             self.updateUi()
             self.connectSignals()
+            logger.info('polargraph hardware connected')
         else:
-            logger.error('device is not a polargraph...no hardware connected')
             self._device = None
 
     @property

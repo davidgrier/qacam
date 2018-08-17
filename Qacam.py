@@ -18,20 +18,20 @@ class Qacam(QtGui.QMainWindow):
         pg.setConfigOption('foreground', 'k')
         self.ui = Ui_Qacam()
         self.ui.setupUi(self)
-        # self.getDevices()
+        self.getDevices()
         self.connectSignals()
         self.initPlots()
         self.show()
 
     def getDevices(self):
         try:
-            self.ui.polargraph.device = polargraph()
-        except Exception:
-            self.ui.polargraph.setEnabled(False)
-        try:
             self.ui.lockin.device = SR830()
         except Exception:
             self.ui.lockin.setEnabled(False)
+        try:
+            self.ui.polargraph.device = polargraph()
+        except Exception:
+            self.ui.polargraph.setEnabled(False)
 
     def connectSignals(self):
         self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)

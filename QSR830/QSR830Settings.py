@@ -24,17 +24,18 @@ class QSR830Settings(QtGui.QWidget):
 
     @device.setter
     def device(self, device):
-        if hasattr(self, 'device'):
-            self.diconnectSignals()
+        if hasattr(self, 'device') and self.device is not None:
+            self.disconnectSignals()
             self.properties = []
             logger.info('lockin amplifier disconnected')
         if isinstance(device, SR830):
             self._device = device
             self.getProperties()
+            self.configureUi()
             self.updateUi()
             self.connectSignals()
+            logger.info('lockin amplifier connected')
         else:
-            logger.error('device is not an SR830...no lockin connected')
             self._device = None
 
     @property
@@ -88,19 +89,31 @@ class QSR830Settings(QtGui.QWidget):
             else:
                 logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))
 
-    @QtCore.pyqtSlot(name='updateDevice')
+    @QtCore.pyqtSlot()
+    def checkInput(self):
+        wid = self.sender()
+        state = wid.validator().validate(wid.text(), 0)[0]
+        if state == QtGui.QValidator.Acceptable:
+            color = '#ffffff'  # white
+        elif state == QtGui.QValidator.Intermediate:
+            color = '#fff79a'  # yellow
+        else:
+            color = '#f6989d'  # red
+        wid.setStyleSheet('QLineEdit {background-color: %s}' % color)
+
+    @QtCore.pyqtSlot()
     def updateDevice_qlineedit(self):
         wid = self.sender()
-        name = wid.objectName()
+        name = str(wid.objectName())
         if isinstance(wid, QtGui.QLineEdit):
             min = wid.validator().bottom()
             max = wid.validator().top()
             value = np.clip(float(wid.text()), min, max)
         setattr(self.device, name, value)
 
-    @QtCore.pyqtSlot(int, name='updateDevice')
+    @QtCore.pyqtSlot(int)
     def updateDevice_selection(self, value):
-        name = self.sender().objectName()
+        name = str(self.sender().objectName())
         setattr(self.device, name, value)
 
     @QtCore.pyqtSlot(bool)
@@ -114,11 +127,13 @@ class QSR830Settings(QtGui.QWidget):
         for prop in self.properties:
             wid = getattr(self.ui, prop)
             if isinstance(wid, QtGui.QLineEdit):
-                wid.textEdited.connect(self.updateDevice)
+                wid.textChanged.connect(self.checkInput)
+                wid.editingFinished.connect(self.updateDevice_qlineedit)
             elif isinstance(wid, QtGui.QSpinBox):
-                wid.valueChanged[int].connect(self.updateDevice)
+                wid.valueChanged[int].connect(self.updateDevice_selection)
             elif isinstance(wid, QtGui.QComboBox):
-                wid.currentIndexChanged[int].connect(self.updateDevice)
+                wid.currentIndexChanged[int].connect(
+                    self.updateDevice_selection)
             elif isinstance(wid, QtGui.QPushButton):
                 wid.clicked.connect(self.autoUpdateDevice)
             else:
@@ -128,11 +143,13 @@ class QSR830Settings(QtGui.QWidget):
         for prop in self.properties:
             wid = getattr(self.ui, prop)
             if isinstance(wid, QtGui.QLineEdit):
-                wid.textEdited.disconnect(self.updateDevice)
+                wid.textChanged.disconnect(self.checkInput)
+                wid.editingFinished.disconnect(self.updateDevice_qlineedit)
             elif isinstance(wid, QtGui.QSpinBox):
-                wid.valueChanged[int].disconnect(self.updateDevice)
+                wid.valueChanged[int].disconnect(self.updateDevice_selection)
             elif isinstance(wid, QtGui.QComboBox):
-                wid.currentIndexChanged[int].disconnect(self.updateDevice)
+                wid.currentIndexChanged[int].disconnect(
+                    self.updateDevice_selection)
             elif isinstance(wid, QtGui.QPushButton):
                 wid.clicked.disconnect(self.autoUpdateDevice)
             else:
