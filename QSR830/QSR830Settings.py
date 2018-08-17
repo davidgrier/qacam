@@ -42,6 +42,22 @@ class QSR830Settings(QtGui.QWidget):
     def properties(self):
         return self._properties
 
+    @property
+    def settings(self):
+        values = dict()
+        for prop in self.properties:
+            value = getattr(self.device, prop)
+            if not inspect.ismethod(value):
+                values[prop] = value
+        return values
+
+    @settings.setter
+    def settings(self, values):
+        for name in values:
+            if hasattr(self.device, name):
+                setattr(self.device, name, values[name])
+        self.updateUi()
+
     def getProperties(self):
         """valid properties appear in both the device and the ui"""
         dprops = [name for name, _ in inspect.getmembers(self.device)]
@@ -102,7 +118,7 @@ class QSR830Settings(QtGui.QWidget):
         wid.setStyleSheet('QLineEdit {background-color: %s}' % color)
 
     @QtCore.pyqtSlot()
-    def updateDevice_qlineedit(self):
+    def updateDevice_edit(self):
         wid = self.sender()
         name = str(wid.objectName())
         if isinstance(wid, QtGui.QLineEdit):
@@ -112,7 +128,7 @@ class QSR830Settings(QtGui.QWidget):
         setattr(self.device, name, value)
 
     @QtCore.pyqtSlot(int)
-    def updateDevice_selection(self, value):
+    def updateDevice_select(self, value):
         name = str(self.sender().objectName())
         setattr(self.device, name, value)
 
@@ -128,12 +144,12 @@ class QSR830Settings(QtGui.QWidget):
             wid = getattr(self.ui, prop)
             if isinstance(wid, QtGui.QLineEdit):
                 wid.textChanged.connect(self.checkInput)
-                wid.editingFinished.connect(self.updateDevice_qlineedit)
+                wid.editingFinished.connect(self.updateDevice_edit)
             elif isinstance(wid, QtGui.QSpinBox):
-                wid.valueChanged[int].connect(self.updateDevice_selection)
+                wid.valueChanged[int].connect(self.updateDevice_select)
             elif isinstance(wid, QtGui.QComboBox):
                 wid.currentIndexChanged[int].connect(
-                    self.updateDevice_selection)
+                    self.updateDevice_select)
             elif isinstance(wid, QtGui.QPushButton):
                 wid.clicked.connect(self.autoUpdateDevice)
             else:
@@ -144,12 +160,12 @@ class QSR830Settings(QtGui.QWidget):
             wid = getattr(self.ui, prop)
             if isinstance(wid, QtGui.QLineEdit):
                 wid.textChanged.disconnect(self.checkInput)
-                wid.editingFinished.disconnect(self.updateDevice_qlineedit)
+                wid.editingFinished.disconnect(self.updateDevice_edit)
             elif isinstance(wid, QtGui.QSpinBox):
-                wid.valueChanged[int].disconnect(self.updateDevice_selection)
+                wid.valueChanged[int].disconnect(self.updateDevice_select)
             elif isinstance(wid, QtGui.QComboBox):
                 wid.currentIndexChanged[int].disconnect(
-                    self.updateDevice_selection)
+                    self.updateDevice_select)
             elif isinstance(wid, QtGui.QPushButton):
                 wid.clicked.disconnect(self.autoUpdateDevice)
             else:

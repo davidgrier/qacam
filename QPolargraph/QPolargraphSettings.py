@@ -43,6 +43,22 @@ class QPolargraphSettings(QtGui.QWidget):
     def properties(self):
         return self._properties
 
+    @property
+    def settings(self):
+        values = dict()
+        for prop in self.properties:
+            value = getattr(self.device, prop)
+            if not inspect.ismethod(value):
+                values[prop] = value
+        return values
+
+    @settings.setter
+    def settings(self, values):
+        for name in values:
+            if hasattr(self.device, name):
+                setattr(self.device, name, values[name])
+        self.updateUi()
+
     def getProperties(self):
         """valid properties appear in both the device and the ui"""
         dprops = [name for name, _ in inspect.getmembers(self.device)]
