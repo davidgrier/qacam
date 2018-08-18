@@ -5,6 +5,7 @@ from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
 from QPolargraph import polargraph
 from QSR830 import SR830
+from QDS345 import DS345
 
 import logging
 logging.basicConfig()
@@ -26,12 +27,16 @@ class Qacam(QtGui.QMainWindow):
     def getDevices(self):
         try:
             self.ui.lockin.device = SR830()
-        except Exception:
-            self.ui.lockin.setEnabled(False)
+        except ValueError:
+            logger.warn('No lockin detected')
+        try:
+            self.ui.functionGenerator.device = DS345()
+        except ValueError:
+            logger.warn('No function generator detected')
         try:
             self.ui.polargraph.device = polargraph()
-        except Exception:
-            self.ui.polargraph.setEnabled(False)
+        except ValueError:
+            logger.warn('No polargraph detected')
 
     def connectSignals(self):
         self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)

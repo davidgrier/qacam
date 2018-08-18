@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>363</width>
-    <height>454</height>
+    <width>252</width>
+    <height>463</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -640,22 +640,16 @@
         <item row="1" column="0">
          <widget class="QLabel" name="labelFrequency">
           <property name="text">
-           <string>Frequency [Hz]</string>
+           <string>Frequency </string>
           </property>
          </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="frequency"/>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="labelAmplitude">
           <property name="text">
-           <string>Amplitude [V]</string>
+           <string>Amplitude</string>
           </property>
          </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="amplitude"/>
         </item>
         <item row="3" column="0">
          <widget class="QLabel" name="labelTrigger">
@@ -686,12 +680,9 @@
         <item row="4" column="0">
          <widget class="QLabel" name="labelPhase">
           <property name="text">
-           <string>Phase [degree]</string>
+           <string>Phase</string>
           </property>
          </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QLineEdit" name="phase"/>
         </item>
         <item row="5" column="0">
          <widget class="QLabel" name="labelHarmonic">
@@ -707,6 +698,66 @@
           </property>
           <property name="maximum">
            <number>19999</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="frequency">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string> Hz</string>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>0.001000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>102000.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="amplitude">
+          <property name="suffix">
+           <string> Vrms</string>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>0.004000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>2.500000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QDoubleSpinBox" name="phase">
+          <property name="suffix">
+           <string>°</string>
+          </property>
+          <property name="minimum">
+           <double>-360.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>729.990000000000009</double>
           </property>
          </widget>
         </item>

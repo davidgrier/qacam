@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>264</width>
-    <height>101</height>
+    <width>254</width>
+    <height>105</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,38 +23,119 @@
    <property name="verticalSpacing">
     <number>2</number>
    </property>
-   <property name="margin">
-    <number>6</number>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
    </property>
    <item row="0" column="0">
     <widget class="QLabel" name="labelFrequency">
      <property name="text">
-      <string>Frequency [Hz]</string>
+      <string>Frequency</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="frequency"/>
+    <widget class="QDoubleSpinBox" name="frequency">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="statusTip">
+      <string>DS345: Frequency [Hz]</string>
+     </property>
+     <property name="suffix">
+      <string> Hz</string>
+     </property>
+     <property name="decimals">
+      <number>6</number>
+     </property>
+     <property name="minimum">
+      <double>0.000010000000000</double>
+     </property>
+     <property name="maximum">
+      <double>100000.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="labelAmplitude">
      <property name="text">
-      <string>Amplitude [Vpp]</string>
+      <string>Amplitude</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="amplitude"/>
+    <widget class="QDoubleSpinBox" name="amplitude">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="statusTip">
+      <string>DS345: Amplitude</string>
+     </property>
+     <property name="suffix">
+      <string> Vpp</string>
+     </property>
+     <property name="minimum">
+      <double>0.010000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+     <property name="value">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="labelOffset">
      <property name="text">
-      <string>Offset [V]</string>
+      <string>Offset</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLineEdit" name="offset"/>
+    <widget class="QDoubleSpinBox" name="offset">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="statusTip">
+      <string>DS345: Offset</string>
+     </property>
+     <property name="suffix">
+      <string> V</string>
+     </property>
+     <property name="minimum">
+      <double>-5.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="labelWaveform">
@@ -65,6 +146,15 @@
    </item>
    <item row="3" column="1">
     <widget class="QComboBox" name="waveform">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="statusTip">
+      <string>DS345: Waveform</string>
+     </property>
      <item>
       <property name="text">
        <string>sine</string>

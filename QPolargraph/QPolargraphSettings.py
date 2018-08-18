@@ -13,25 +13,6 @@ class QPolargraphSettings(QSettingsWidget):
                                                   device=device,
                                                   ui=Ui_Polargraph())
 
-    def configureUi(self):
-        # validate edit fields
-        notation = QtGui.QDoubleValidator.StandardNotation
-        val = QtGui.QDoubleValidator(0.1, 5, 2, self.ui.L)
-        val.setNotation(notation)
-        self.ui.L.setValidator(val)
-        val = QtGui.QDoubleValidator(0.01, 0.5, 3, self.ui.y0)
-        val.setNotation(notation)
-        self.ui.y0.setValidator(val)
-        val = QtGui.QDoubleValidator(100, 1000, 0, self.ui.speed)
-        val.setNotation(notation)
-        self.ui.speed.setValidator(val)
-        val = QtGui.QDoubleValidator(0.01, 5, 2, self.ui.width)
-        val.setNotation(notation)
-        self.ui.width.setValidator(val)
-        val = QtGui.QDoubleValidator(0.01, 5, 2, self.ui.height)
-        val.setNotation(notation)
-        self.ui.height.setValidator(val)
-
 
 if __name__ == "__main__":
     import sys

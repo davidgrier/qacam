@@ -14,18 +14,6 @@ class QSR830Settings(QSettingsWidget):
                                              ui=Ui_SR830Settings())
 
     def configureUi(self):
-        # validate edit fields
-        notation = QtGui.QDoubleValidator.StandardNotation
-        val = QtGui.QDoubleValidator(0.001, 102000., 3, self.ui.frequency)
-        val.setNotation(notation)
-        self.ui.frequency.setValidator(val)
-        val = QtGui.QDoubleValidator(0.004, 5, 3, self.ui.amplitude)
-        val.setNotation(notation)
-        self.ui.amplitude.setValidator(val)
-        val = QtGui.QDoubleValidator(-360., 729.99, 2, self.ui.phase)
-        val.setNotation(notation)
-        self.ui.phase.setValidator(val)
-
         # Choice of source determines activity of widgets
         self.ui.source.currentIndexChanged[int].connect(
             lambda v: self.ui.frequency.setEnabled(bool(v)))

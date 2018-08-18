@@ -6,18 +6,13 @@ from DS345Settings_UI import Ui_DS345Settings
 
 
 class QDS345Settings(QSettingsWidget):
-    """Configuration for a Stanford Research Systems DS345 function generator"""
+    """Configuration for a Stanford Research Systems
+    DS345 function generator"""
 
     def __init__(self, parent=None, device=None):
         super(QDS345Settings, self).__init__(parent=parent,
                                              device=device,
                                              ui=Ui_DS345Settings())
-
-    def configureUi(self):
-        # validate edit fields
-        notation = QtGui.DoubleValidator.StandardNotation
-        val = QtGui.QDoubleValidator(0.001, 5., 3, self.ui.amplitude)
-        val.setNotation(notation)
 
 
 if __name__ == '__main__':

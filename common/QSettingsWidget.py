@@ -26,6 +26,7 @@ class QSettingsWidget(QtGui.QWidget):
     @device.setter
     def device(self, device):
         if device is None:
+            self.setEnabled(False)
             self._device = None
             return
         if hasattr(self, 'device'):
@@ -37,6 +38,7 @@ class QSettingsWidget(QtGui.QWidget):
         self.configureUi()
         self.updateUi()
         self.connectSignals()
+        self.setEnabled(True)
         logger.info('device connected')
 
     @property
@@ -77,6 +79,8 @@ class QSettingsWidget(QtGui.QWidget):
             val = getattr(self.device, prop)
             if isinstance(wid, QtGui.QLineEdit):
                 wid.setText(str(val))
+            elif isinstance(wid, QtGui.QDoubleSpinBox):
+                wid.setValue(val)
             elif isinstance(wid, QtGui.QSpinBox):
                 wid.setValue(val)
             elif isinstance(wid, QtGui.QComboBox):
@@ -108,8 +112,8 @@ class QSettingsWidget(QtGui.QWidget):
             value = np.clip(float(wid.text()), min, max)
         setattr(self.device, name, value)
 
-    @QtCore.pyqtSlot(int)
-    def updateDevice_select(self, value):
+    @QtCore.pyqtSlot(object)
+    def updateDevice(self, value):
         name = str(self.sender().objectName())
         setattr(self.device, name, value)
 
@@ -126,8 +130,10 @@ class QSettingsWidget(QtGui.QWidget):
             if isinstance(wid, QtGui.QLineEdit):
                 wid.textChanged.connect(self.checkInput)
                 wid.editingFinished.connect(self.updateDevice_edit)
+            elif isinstance(wid, QtGui.QDoubleSpinBox):
+                wid.valueChanged[QtCore.double].connect(self.updateDevice)
             elif isinstance(wid, QtGui.QSpinBox):
-                wid.valueChanged[int].connect(self.updateDevice_select)
+                wid.valueChanged[int].connect(self.updateDevice)
             elif isinstance(wid, QtGui.QComboBox):
                 wid.currentIndexChanged[int].connect(
                     self.updateDevice_select)
@@ -142,11 +148,13 @@ class QSettingsWidget(QtGui.QWidget):
             if isinstance(wid, QtGui.QLineEdit):
                 wid.textChanged.disconnect(self.checkInput)
                 wid.editingFinished.disconnect(self.updateDevice_edit)
+            elif isinstance(wid, QtGui.QDoubleSpinBox):
+                wid.valueChanged[QtCore.double].disconnect(self.updateDevice)
             elif isinstance(wid, QtGui.QSpinBox):
-                wid.valueChanged[int].disconnect(self.updateDevice_select)
+                wid.valueChanged[int].disconnect(self.updateDevice)
             elif isinstance(wid, QtGui.QComboBox):
                 wid.currentIndexChanged[int].disconnect(
-                    self.updateDevice_select)
+                    self.updateDevice)
             elif isinstance(wid, QtGui.QPushButton):
                 wid.clicked.disconnect(self.autoUpdateDevice)
             else:
