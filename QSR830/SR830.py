@@ -4,10 +4,6 @@ from common.SerialDevice import SerialDevice
 import numpy as np
 import re
 
-import logging
-logging.basicConfig()
-logger = logging.getLogger(__name__)
-
 
 class SR830(SerialDevice):
 

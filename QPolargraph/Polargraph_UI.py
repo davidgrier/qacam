@@ -25,9 +25,9 @@ except AttributeError:
 class Ui_Polargraph(object):
     def setupUi(self, Polargraph):
         Polargraph.setObjectName(_fromUtf8("Polargraph"))
-        Polargraph.resize(371, 153)
+        Polargraph.resize(327, 145)
         self.verticalLayout_3 = QtGui.QVBoxLayout(Polargraph)
-        self.verticalLayout_3.setMargin(4)
+        self.verticalLayout_3.setMargin(0)
         self.verticalLayout_3.setSpacing(2)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.frameSetup = QtGui.QFrame(Polargraph)

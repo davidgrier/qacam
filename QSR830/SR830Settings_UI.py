@@ -25,9 +25,9 @@ except AttributeError:
 class Ui_SR830Settings(object):
     def setupUi(self, SR830Settings):
         SR830Settings.setObjectName(_fromUtf8("SR830Settings"))
-        SR830Settings.resize(370, 575)
+        SR830Settings.resize(363, 454)
         self.verticalLayout_4 = QtGui.QVBoxLayout(SR830Settings)
-        self.verticalLayout_4.setMargin(4)
+        self.verticalLayout_4.setMargin(0)
         self.verticalLayout_4.setSpacing(2)
         self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
         self.frameInputConfiguration = QtGui.QFrame(SR830Settings)
@@ -369,13 +369,13 @@ class Ui_SR830Settings(object):
         self.labelSource.setText(_translate("SR830Settings", "Source", None))
         self.source.setItemText(0, _translate("SR830Settings", "External", None))
         self.source.setItemText(1, _translate("SR830Settings", "Internal", None))
-        self.labelFrequency.setText(_translate("SR830Settings", "Frequency", None))
-        self.labelAmplitude.setText(_translate("SR830Settings", "Amplitude", None))
+        self.labelFrequency.setText(_translate("SR830Settings", "Frequency [Hz]", None))
+        self.labelAmplitude.setText(_translate("SR830Settings", "Amplitude [V]", None))
         self.labelTrigger.setText(_translate("SR830Settings", "Trigger", None))
         self.trigger.setItemText(0, _translate("SR830Settings", "Sine Zero Crossing", None))
         self.trigger.setItemText(1, _translate("SR830Settings", "TTL Rising Edge", None))
         self.trigger.setItemText(2, _translate("SR830Settings", "TTL Falling Edge", None))
-        self.labelPhase.setText(_translate("SR830Settings", "Phase", None))
+        self.labelPhase.setText(_translate("SR830Settings", "Phase [degree]", None))
         self.labelHarmonic.setText(_translate("SR830Settings", "Harmonic", None))
 
 
