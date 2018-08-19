@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import (
+    QWidget, QComboBox, QSpinBox, QDoubleSpinBox, QPushButton)
 import inspect
-import numpy as np
 
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 
-class QSettingsWidget(QtGui.QWidget):
+class QSettingsWidget(QWidget):
     """A glue class that connects a GUI with a device"""
 
     def __init__(self, parent=None, device=None, ui=None):
@@ -77,40 +78,16 @@ class QSettingsWidget(QtGui.QWidget):
         for prop in self.properties:
             wid = getattr(self.ui, prop)
             val = getattr(self.device, prop)
-            if isinstance(wid, QtGui.QLineEdit):
-                wid.setText(str(val))
-            elif isinstance(wid, QtGui.QDoubleSpinBox):
+            if isinstance(wid, QDoubleSpinBox):
                 wid.setValue(val)
-            elif isinstance(wid, QtGui.QSpinBox):
+            elif isinstance(wid, QSpinBox):
                 wid.setValue(val)
-            elif isinstance(wid, QtGui.QComboBox):
+            elif isinstance(wid, QComboBox):
                 wid.setCurrentIndex(val)
-            elif isinstance(wid, QtGui.QPushButton):
+            elif isinstance(wid, QPushButton):
                 continue
             else:
                 logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))
-
-    @QtCore.pyqtSlot()
-    def checkInput(self):
-        wid = self.sender()
-        state = wid.validator().validate(wid.text(), 0)[0]
-        if state == QtGui.QValidator.Acceptable:
-            color = '#ffffff'  # white
-        elif state == QtGui.QValidator.Intermediate:
-            color = '#fff79a'  # yellow
-        else:
-            color = '#f6989d'  # red
-        wid.setStyleSheet('QLineEdit {background-color: %s}' % color)
-
-    @QtCore.pyqtSlot()
-    def updateDevice_edit(self):
-        wid = self.sender()
-        name = str(wid.objectName())
-        if isinstance(wid, QtGui.QLineEdit):
-            min = wid.validator().bottom()
-            max = wid.validator().top()
-            value = np.clip(float(wid.text()), min, max)
-        setattr(self.device, name, value)
 
     @QtCore.pyqtSlot(object)
     def updateDevice(self, value):
@@ -127,17 +104,13 @@ class QSettingsWidget(QtGui.QWidget):
     def connectSignals(self):
         for prop in self.properties:
             wid = getattr(self.ui, prop)
-            if isinstance(wid, QtGui.QLineEdit):
-                wid.textChanged.connect(self.checkInput)
-                wid.editingFinished.connect(self.updateDevice_edit)
-            elif isinstance(wid, QtGui.QDoubleSpinBox):
+            if isinstance(wid, QDoubleSpinBox):
                 wid.valueChanged[QtCore.double].connect(self.updateDevice)
-            elif isinstance(wid, QtGui.QSpinBox):
+            elif isinstance(wid, QSpinBox):
                 wid.valueChanged[int].connect(self.updateDevice)
-            elif isinstance(wid, QtGui.QComboBox):
-                wid.currentIndexChanged[int].connect(
-                    self.updateDevice_select)
-            elif isinstance(wid, QtGui.QPushButton):
+            elif isinstance(wid, QComboBox):
+                wid.currentIndexChanged[int].connect(self.updateDevice)
+            elif isinstance(wid, QPushButton):
                 wid.clicked.connect(self.autoUpdateDevice)
             else:
                 logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))
@@ -145,17 +118,14 @@ class QSettingsWidget(QtGui.QWidget):
     def disconnectSignals(self):
         for prop in self.properties:
             wid = getattr(self.ui, prop)
-            if isinstance(wid, QtGui.QLineEdit):
-                wid.textChanged.disconnect(self.checkInput)
-                wid.editingFinished.disconnect(self.updateDevice_edit)
-            elif isinstance(wid, QtGui.QDoubleSpinBox):
+            if isinstance(wid, QDoubleSpinBox):
                 wid.valueChanged[QtCore.double].disconnect(self.updateDevice)
-            elif isinstance(wid, QtGui.QSpinBox):
+            elif isinstance(wid, QSpinBox):
                 wid.valueChanged[int].disconnect(self.updateDevice)
-            elif isinstance(wid, QtGui.QComboBox):
+            elif isinstance(wid, QComboBox):
                 wid.currentIndexChanged[int].disconnect(
                     self.updateDevice)
-            elif isinstance(wid, QtGui.QPushButton):
+            elif isinstance(wid, QPushButton):
                 wid.clicked.disconnect(self.autoUpdateDevice)
             else:
                 logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))

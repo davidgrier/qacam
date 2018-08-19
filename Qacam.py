@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui
+from PyQt5.QtWidgets import QMainWindow
 from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
 from QPolargraph import polargraph
@@ -12,7 +12,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 
-class Qacam(QtGui.QMainWindow):
+class Qacam(QMainWindow):
     def __init__(self):
         super(Qacam, self).__init__()
         pg.setConfigOption('background', 'w')
@@ -50,7 +50,8 @@ class Qacam(QtGui.QMainWindow):
 
 
 if __name__ == "__main__":
+    from PyQt5.QtWidgets import QApplication
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     instrument = Qacam()
     sys.exit(app.exec_())

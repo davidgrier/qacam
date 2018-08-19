@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore
 from common.QSettingsWidget import QSettingsWidget
 from Polargraph_UI import Ui_Polargraph
 
@@ -23,10 +23,11 @@ class QPolargraphSettings(QSettingsWidget):
 
 
 if __name__ == "__main__":
+    from PyQt5.QtWidgets import QApplication
     import sys
     from polargraph import polargraph
 
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     try:
         device = polargraph()
     except ValueError:

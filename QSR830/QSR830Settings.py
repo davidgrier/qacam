@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui
 from common.QSettingsWidget import QSettingsWidget
 from SR830Settings_UI import Ui_SR830Settings
 
@@ -27,10 +26,11 @@ class QSR830Settings(QSettingsWidget):
 
 
 if __name__ == "__main__":
+    from PyQt5.QtWidgets import QApplication
     import sys
     from SR830 import SR830
 
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     try:
         device = SR830()
     except ValueError:
