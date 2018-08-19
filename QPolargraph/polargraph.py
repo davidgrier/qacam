@@ -10,6 +10,7 @@ logger.setLevel(logging.INFO)
 
 
 class motors(SerialDevice):
+    """Control the pair of stepper motors driving a polargraph"""
 
     def __init__(self):
         super(motors, self).__init__(eol='\n',
@@ -28,7 +29,7 @@ class motors(SerialDevice):
         return acam
 
     def goto(self, n1, n2):
-        """Sends M:n1:n2"""
+        """Move to index (n1, n2)"""
         self.write('M:%d:%d' % (n1, n2))
 
     def release(self):
@@ -70,14 +71,23 @@ class motors(SerialDevice):
 
 
 class polargraph(motors):
+    """Control a polargraph
+
+    The polargraph consists of two stepper motors with GT2 gears
+    that translate a GT2 timing belt.  The motors are controlled
+    by an Arduino microcontroller that is connected to the host
+    computer by USB.  This class communicates with the Arduino to
+    obtain programmed motion from the motors.
+    """
 
     def __init__(self,
                  L=1.,  # separation between motors [m]
                  y0=0.1,  # rest displacement from motors' centerline [m]
-                 ds=0.002,  # distance traveled per step [m]
                  width=0.6,  # width of scan area [m]
                  height=0.6,  # height of scan area [m]
-                 step=0.005):  # vertical step between scan lines [m]
+                 step=0.005,  # vertical displacement between scan lines [m]
+                 ds=0.00025):  # distance traveled per motor step [m]
+
         super(polargraph, self).__init__()
 
         self.L = float(L)
@@ -85,12 +95,18 @@ class polargraph(motors):
         self.width = float(width)
         self.height = float(height)
         self.step = float(step)
+        self.ds = float(ds)
+        # NOTE: GT2 timing belt has 2 mm between teeth.
+        # Standard GT2 gears have 25 teeth per revolution,
+        # for a total of 50 mm belt translation per revolution.
+        # Standard NEMA 17 stepper motors have 200 steps/revolution.
+        # This yields a step size of 0.25 mm/step.
 
         self.s0 = np.sqrt((self.L / 2.)**2 + (self.y0)**2)
-        self.ds = float(ds)
+        # distance (length of belt) from motor to payload
 
     def goto(self, x, y):
-        """Take the number of steps needed to reach position (x,y)"""
+        """Move payload to position (x,y)"""
         s1 = np.sqrt((self.L / 2. - x)**2 + (y + self.y0)**2)
         s2 = np.sqrt((self.L / 2. + x)**2 + (y + self.y0)**2)
         n1 = np.rint((s1 - self.s0) / self.ds).astype(int)
@@ -98,7 +114,7 @@ class polargraph(motors):
         super(polargraph, self).goto(n1, n2)
 
     def home(self):
-        """Go to home position"""
+        """Move payload to home position"""
         self.goto(0, 0)
 
     def position(self):

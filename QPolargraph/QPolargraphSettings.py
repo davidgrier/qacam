@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from common.QSettingsWidget import QSettingsWidget
 from Polargraph_UI import Ui_Polargraph
 
@@ -12,6 +12,14 @@ class QPolargraphSettings(QSettingsWidget):
         super(QPolargraphSettings, self).__init__(parent=parent,
                                                   device=device,
                                                   ui=Ui_Polargraph())
+
+    @QtCore.pyqtSlot(object)
+    def limitRange(self, value):
+        self.width.setMaximum(min(self.width.value(), 0.9*value))
+        self.height.setMaximum(min(self.height.value(), 0.9*value))
+
+    def ConfigureUi(self):
+        self.L.valueChanged[QtCore.double].connect(self.limitRange)
 
 
 if __name__ == "__main__":
