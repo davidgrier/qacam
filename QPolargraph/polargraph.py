@@ -16,7 +16,6 @@ class motors(SerialDevice):
         super(motors, self).__init__(eol='\n',
                                      manufacturer='Arduino',
                                      timeout=1)
-        self._speed = 500.
         self.n1 = 0
         self.n2 = 0
 
@@ -46,7 +45,7 @@ class motors(SerialDevice):
             running = 0
         return bool(int(running))
 
-    def steps(self):
+    def stepNumbers(self):
         """Returns current step numbers for motors"""
         self.write('P')
         try:
@@ -60,14 +59,14 @@ class motors(SerialDevice):
         return self.n1, self.n2
 
     @property
-    def speed(self):
-        return self._speed
+    def stepSpeed(self):
+        """Maximum motor speed in steps/s"""
+        return self._stepSpeed
 
-    @speed.setter
-    def speed(self, speed):
-        """Sends V:speed"""
-        self._speed = float(speed)
-        self.write('V%f' % self._speed)
+    @stepSpeed.setter
+    def stepSpeed(self, speed):
+        self._stepSpeed = float(speed)
+        self.write('V%f' % self._stepSpeed)
 
 
 class polargraph(motors):
@@ -81,29 +80,37 @@ class polargraph(motors):
     """
 
     def __init__(self,
+                 unit=2.,  # size of one timing belt tooth [mm]
+                 circumference=25.,  # belt teeth per revolution
+                 steps=200.,  # motor steps per revolution
+                 stepSpeed=500.,
                  L=1.,  # separation between motors [m]
                  y0=0.1,  # rest displacement from motors' centerline [m]
+                 y1=0.,  # vertical start of scan area [m]
                  width=0.6,  # width of scan area [m]
                  height=0.6,  # height of scan area [m]
-                 step=0.005,  # vertical displacement between scan lines [m]
-                 ds=0.00025):  # distance traveled per motor step [m]
+                 dy=0.005):  # vertical displacement between scan lines [m]
 
         super(polargraph, self).__init__()
 
+        # Belt drive
+        self.unit = float(unit)
+        self.circumference = float(circumference)
+        self.steps = float(steps)
+        self.stepSpeed = float(stepSpeed)
+
+        # Motor configuration
         self.L = float(L)
         self.y0 = float(y0)
+
+        # Scan configuration
+        self.y1 = float(y1)
         self.width = float(width)
         self.height = float(height)
-        self.step = float(step)
-        self.ds = float(ds)
-        # NOTE: GT2 timing belt has 2 mm between teeth.
-        # Standard GT2 gears have 25 teeth per revolution,
-        # for a total of 50 mm belt translation per revolution.
-        # Standard NEMA 17 stepper motors have 200 steps/revolution.
-        # This yields a step size of 0.25 mm/step.
+        self.dy = float(dy)
 
         self.s0 = np.sqrt((self.L / 2.)**2 + (self.y0)**2)
-        # distance (length of belt) from motor to payload
+        # distance (length of belt) from motor to payload at home position
 
     def goto(self, x, y):
         """Move payload to position (x,y)"""
@@ -125,6 +132,15 @@ class polargraph(motors):
         x = (s2**2 - s1**2)/(2. * self.L)
         y = np.sqrt((s1**2 + s2**2)/2. - self.L**2/4. - x**2) - self.y0
         return x, y
+
+    @property
+    def speed(self):
+        """Translation speed in mm/s"""
+        return self.stepSpeed * self.circumference * self.unit / self.steps
+
+    @speed.setter
+    def speed(self, value):
+        self.stepSpeed = value * self.steps / (self.circumference * self.unit)
 
 
 def main():
