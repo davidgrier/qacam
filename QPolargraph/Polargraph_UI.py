@@ -11,9 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Polargraph(object):
     def setupUi(self, Polargraph):
         Polargraph.setObjectName("Polargraph")
-        Polargraph.resize(372, 240)
+        Polargraph.resize(333, 205)
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(Polargraph)
-        self.verticalLayout_4.setContentsMargins(4, 4, 4, 4)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setSpacing(2)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.frameSetup = QtWidgets.QFrame(Polargraph)
@@ -35,7 +35,7 @@ class Ui_Polargraph(object):
         self.wSetup = QtWidgets.QWidget(self.frameSetup)
         self.wSetup.setObjectName("wSetup")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.wSetup)
-        self.horizontalLayout.setContentsMargins(6, 6, 6, 6)
+        self.horizontalLayout.setContentsMargins(4, 2, 4, 2)
         self.horizontalLayout.setSpacing(4)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.labelL = QtWidgets.QLabel(self.wSetup)
@@ -80,9 +80,9 @@ class Ui_Polargraph(object):
         self.wBelt = QtWidgets.QWidget(self.frameBelt)
         self.wBelt.setObjectName("wBelt")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.wBelt)
-        self.gridLayout_2.setContentsMargins(6, 6, 6, 6)
+        self.gridLayout_2.setContentsMargins(4, 2, 4, 2)
         self.gridLayout_2.setHorizontalSpacing(4)
-        self.gridLayout_2.setVerticalSpacing(2)
+        self.gridLayout_2.setVerticalSpacing(1)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.labelUnit = QtWidgets.QLabel(self.wBelt)
         self.labelUnit.setObjectName("labelUnit")
@@ -146,7 +146,7 @@ class Ui_Polargraph(object):
         self.wScan = QtWidgets.QWidget(self.frameScan)
         self.wScan.setObjectName("wScan")
         self.gridLayout = QtWidgets.QGridLayout(self.wScan)
-        self.gridLayout.setContentsMargins(6, 6, 6, 6)
+        self.gridLayout.setContentsMargins(4, 2, 4, 2)
         self.gridLayout.setHorizontalSpacing(4)
         self.gridLayout.setVerticalSpacing(2)
         self.gridLayout.setObjectName("gridLayout")
@@ -198,7 +198,7 @@ class Ui_Polargraph(object):
 
     def retranslateUi(self, Polargraph):
         _translate = QtCore.QCoreApplication.translate
-        Polargraph.setWindowTitle(_translate("Polargraph", "Form"))
+        Polargraph.setWindowTitle(_translate("Polargraph", "Polargraph"))
         self.frameSetup.setStatusTip(_translate("Polargraph", "Polargraph: Layout of scanner"))
         self.labelSetup.setText(_translate("Polargraph", "Setup"))
         self.labelL.setText(_translate("Polargraph", "L"))

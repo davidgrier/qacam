@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Qacam(object):
     def setupUi(self, Qacam):
         Qacam.setObjectName("Qacam")
-        Qacam.resize(800, 600)
+        Qacam.resize(868, 531)
         self.centralwidget = QtWidgets.QWidget(Qacam)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -120,7 +120,7 @@ class Ui_Qacam(object):
         self.horizontalLayout_2.addWidget(self.controlWidget)
         Qacam.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Qacam)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 868, 22))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")

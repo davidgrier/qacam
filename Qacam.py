@@ -19,6 +19,7 @@ class Qacam(QMainWindow):
         pg.setConfigOption('foreground', 'k')
         self.ui = Ui_Qacam()
         self.ui.setupUi(self)
+        self.configureUi()
         self.getDevices()
         self.connectSignals()
         self.initPlots()
@@ -37,6 +38,12 @@ class Qacam(QMainWindow):
             self.ui.polargraph.device = polargraph()
         except ValueError:
             logger.warn('No polargraph detected')
+
+    def configureUi(self):
+        self.ui.polargraph.ui.frameBelt.hide()
+        self.ui.functionGenerator.ui.offset.setDisabled(True)
+        self.ui.lockin.ui.frameAuto.hide()
+        self.ui.lockin.ui.frameReference.hide()
 
     def connectSignals(self):
         self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)
