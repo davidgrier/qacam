@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Qacam_UI.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.2
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Qacam(object):
     def setupUi(self, Qacam):
         Qacam.setObjectName("Qacam")
-        Qacam.resize(868, 531)
+        Qacam.resize(868, 620)
         self.centralwidget = QtWidgets.QWidget(Qacam)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -120,7 +120,7 @@ class Ui_Qacam(object):
         self.horizontalLayout_2.addWidget(self.controlWidget)
         Qacam.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Qacam)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 868, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 868, 25))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -128,21 +128,21 @@ class Ui_Qacam(object):
         self.statusbar = QtWidgets.QStatusBar(Qacam)
         self.statusbar.setObjectName("statusbar")
         Qacam.setStatusBar(self.statusbar)
-        self.actionSave_Settings = QtWidgets.QAction(Qacam)
-        self.actionSave_Settings.setObjectName("actionSave_Settings")
-        self.actionSave_Hologram = QtWidgets.QAction(Qacam)
-        self.actionSave_Hologram.setAutoRepeat(False)
-        self.actionSave_Hologram.setObjectName("actionSave_Hologram")
-        self.action_Quit = QtWidgets.QAction(Qacam)
-        self.action_Quit.setObjectName("action_Quit")
-        self.menuFile.addAction(self.actionSave_Settings)
-        self.menuFile.addAction(self.actionSave_Hologram)
-        self.menuFile.addAction(self.action_Quit)
+        self.actionSaveSettings = QtWidgets.QAction(Qacam)
+        self.actionSaveSettings.setObjectName("actionSaveSettings")
+        self.actionSaveHologram = QtWidgets.QAction(Qacam)
+        self.actionSaveHologram.setAutoRepeat(False)
+        self.actionSaveHologram.setObjectName("actionSaveHologram")
+        self.actionQuit = QtWidgets.QAction(Qacam)
+        self.actionQuit.setObjectName("actionQuit")
+        self.menuFile.addAction(self.actionSaveSettings)
+        self.menuFile.addAction(self.actionSaveHologram)
+        self.menuFile.addAction(self.actionQuit)
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(Qacam)
         self.tabWidget.setCurrentIndex(0)
-        self.action_Quit.triggered.connect(Qacam.close)
+        self.actionQuit.triggered.connect(Qacam.close)
         QtCore.QMetaObject.connectSlotsByName(Qacam)
 
     def retranslateUi(self, Qacam):
@@ -156,13 +156,13 @@ class Ui_Qacam(object):
         self.labelFunctionGenerator.setText(_translate("Qacam", "Function Generator"))
         self.labelLockin.setText(_translate("Qacam", "Lockin Amplifier"))
         self.menuFile.setTitle(_translate("Qacam", "File"))
-        self.actionSave_Settings.setText(_translate("Qacam", "Save Settings"))
-        self.actionSave_Settings.setStatusTip(_translate("Qacam", "Save Instrument Settings"))
-        self.actionSave_Settings.setShortcut(_translate("Qacam", "Meta+T"))
-        self.actionSave_Hologram.setText(_translate("Qacam", "Save Hologram ..."))
-        self.actionSave_Hologram.setStatusTip(_translate("Qacam", "Save Hologram"))
-        self.actionSave_Hologram.setShortcut(_translate("Qacam", "Meta+S"))
-        self.action_Quit.setText(_translate("Qacam", "&Quit"))
+        self.actionSaveSettings.setText(_translate("Qacam", "Save Settings"))
+        self.actionSaveSettings.setStatusTip(_translate("Qacam", "Save Instrument Settings"))
+        self.actionSaveSettings.setShortcut(_translate("Qacam", "Meta+T"))
+        self.actionSaveHologram.setText(_translate("Qacam", "Save Hologram ..."))
+        self.actionSaveHologram.setStatusTip(_translate("Qacam", "Save Hologram"))
+        self.actionSaveHologram.setShortcut(_translate("Qacam", "Meta+S"))
+        self.actionQuit.setText(_translate("Qacam", "&Quit"))
 
 from QDS345 import QDS345Settings
 from QPolargraph import QPolargraphSettings

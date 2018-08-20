@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import pyqtSlot
 from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
 from QPolargraph import polargraph
 from QSR830 import SR830
 from QDS345 import DS345
+from common.configure import configure
 
 import logging
 logging.basicConfig()
@@ -26,16 +28,20 @@ class Qacam(QMainWindow):
         self.show()
 
     def getDevices(self):
+        self.config = configure(self)
         try:
             self.ui.lockin.device = SR830()
+            self.config.restore(self.ui.lockin)
         except ValueError:
             logger.warn('No lockin detected')
         try:
             self.ui.functionGenerator.device = DS345()
+            self.config.restore(self.ui.functionGenerator)
         except ValueError:
             logger.warn('No function generator detected')
         try:
             self.ui.polargraph.device = polargraph()
+            self.config.restore(self.ui.polargraph)
         except ValueError:
             logger.warn('No polargraph detected')
 
@@ -47,6 +53,7 @@ class Qacam(QMainWindow):
 
     def connectSignals(self):
         self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)
+        self.ui.actionSaveSettings.triggered.connect(self.saveConfiguration)
 
     def initPlots(self):
         for plot in [self.ui.plot, self.ui.plotAmplitude, self.ui.plotPhase]:
@@ -54,6 +61,13 @@ class Qacam(QMainWindow):
             plot.setAspectLocked(ratio=1)
             plot.invertY(True)
             plot.showGrid(True, True, 0.2)
+
+    @pyqtSlot()
+    def saveConfiguration(self):
+        self.config.save(self.ui.lockin)
+        self.config.save(self.ui.functionGenerator)
+        self.config.save(self.ui.polargraph)
+        logger.info('Configuration Saved')
 
 
 if __name__ == "__main__":

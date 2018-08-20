@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore
+from PyQt5.QtCore import (pyqtSlot, QTimer)
 from PyQt5.QtWidgets import (
     QWidget, QComboBox, QSpinBox, QDoubleSpinBox, QPushButton)
 import inspect
@@ -32,7 +32,6 @@ class QSettingsWidget(QWidget):
             return
         if hasattr(self, 'device'):
             self.disconnectSignals()
-            self.properties = []
             logger.info('device disconnected')
         self._device = device
         self.getProperties()
@@ -41,10 +40,6 @@ class QSettingsWidget(QWidget):
         self.connectSignals()
         self.setEnabled(True)
         logger.info('device connected')
-
-    @property
-    def properties(self):
-        return self._properties
 
     @property
     def settings(self):
@@ -60,7 +55,11 @@ class QSettingsWidget(QWidget):
         for name in values:
             if hasattr(self.device, name):
                 setattr(self.device, name, values[name])
-        self.updateUi()
+        self.updateUi
+
+    @property
+    def properties(self):
+        return self._properties
 
     def getProperties(self):
         """valid properties appear in both the device and the ui"""
@@ -72,7 +71,7 @@ class QSettingsWidget(QWidget):
     def configureUi(self):
         pass
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def updateUi(self):
         """Update widgets with current values from device"""
         for prop in self.properties:
@@ -89,17 +88,17 @@ class QSettingsWidget(QWidget):
             else:
                 logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))
 
-    @QtCore.pyqtSlot(object)
+    @pyqtSlot(object)
     def updateDevice(self, value):
         name = str(self.sender().objectName())
         setattr(self.device, name, value)
 
-    @QtCore.pyqtSlot(bool)
+    @pyqtSlot(bool)
     def autoUpdateDevice(self, flag):
         autosetproperty = self.sender.objectName()
         autosetmethod = getattr(self.device, autosetproperty)
         autosetmethod()
-        QtCore.QTimer.singleShot(1000., self.updateUi)
+        QTimer.singleShot(1000., self.updateUi)
 
     def connectSignals(self):
         for prop in self.properties:

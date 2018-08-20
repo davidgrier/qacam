@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>868</width>
-    <height>531</height>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -237,21 +237,21 @@
      <x>0</x>
      <y>0</y>
      <width>868</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionSave_Settings"/>
-    <addaction name="actionSave_Hologram"/>
-    <addaction name="action_Quit"/>
+    <addaction name="actionSaveSettings"/>
+    <addaction name="actionSaveHologram"/>
+    <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionSave_Settings">
+  <action name="actionSaveSettings">
    <property name="text">
     <string>Save Settings</string>
    </property>
@@ -262,7 +262,7 @@
     <string>Meta+T</string>
    </property>
   </action>
-  <action name="actionSave_Hologram">
+  <action name="actionSaveHologram">
    <property name="text">
     <string>Save Hologram ...</string>
    </property>
@@ -276,7 +276,7 @@
     <bool>false</bool>
    </property>
   </action>
-  <action name="action_Quit">
+  <action name="actionQuit">
    <property name="text">
     <string>&amp;Quit</string>
    </property>
@@ -311,7 +311,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>action_Quit</sender>
+   <sender>actionQuit</sender>
    <signal>triggered()</signal>
    <receiver>Qacam</receiver>
    <slot>close()</slot>
@@ -321,8 +321,8 @@
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>399</x>
-     <y>299</y>
+     <x>433</x>
+     <y>309</y>
     </hint>
    </hints>
   </connection>
