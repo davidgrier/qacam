@@ -105,11 +105,11 @@ class QSettingsWidget(QWidget):
         for prop in self.properties:
             wid = getattr(self.ui, prop)
             if isinstance(wid, QDoubleSpinBox):
-                wid.valueChanged[QtCore.double].connect(self.updateDevice)
+                wid.valueChanged.connect(self.updateDevice)
             elif isinstance(wid, QSpinBox):
-                wid.valueChanged[int].connect(self.updateDevice)
+                wid.valueChanged.connect(self.updateDevice)
             elif isinstance(wid, QComboBox):
-                wid.currentIndexChanged[int].connect(self.updateDevice)
+                wid.currentIndexChanged.connect(self.updateDevice)
             elif isinstance(wid, QPushButton):
                 wid.clicked.connect(self.autoUpdateDevice)
             else:
@@ -119,12 +119,11 @@ class QSettingsWidget(QWidget):
         for prop in self.properties:
             wid = getattr(self.ui, prop)
             if isinstance(wid, QDoubleSpinBox):
-                wid.valueChanged[QtCore.double].disconnect(self.updateDevice)
+                wid.valueChanged.disconnect(self.updateDevice)
             elif isinstance(wid, QSpinBox):
-                wid.valueChanged[int].disconnect(self.updateDevice)
+                wid.valueChanged.disconnect(self.updateDevice)
             elif isinstance(wid, QComboBox):
-                wid.currentIndexChanged[int].disconnect(
-                    self.updateDevice)
+                wid.currentIndexChanged.disconnect(self.updateDevice)
             elif isinstance(wid, QPushButton):
                 wid.clicked.disconnect(self.autoUpdateDevice)
             else:
