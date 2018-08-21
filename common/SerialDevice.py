@@ -53,7 +53,7 @@ class SerialDevice(object):
                         fcntl.flock(self.ser.fileno(),
                                     fcntl.LOCK_EX | fcntl.LOCK_NB)
                     except IOError:
-                        logger.warning('{} is busy'.format(self.ser.port))
+                        logger.info('{} is busy'.format(self.ser.port))
                         self.ser.close()
                         continue
                 else:
@@ -85,3 +85,10 @@ class SerialDevice(object):
 
     def available(self):
         return self.ser.in_waiting
+
+    def busy(self):
+        """Return True if device is executing a command
+
+        This should be overridden by subclass
+        """
+        return False

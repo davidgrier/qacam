@@ -20,7 +20,15 @@ class SR830(SerialDevice):
         idn = self.identification
         return re.search('SR830', idn)
 
+    def busy(self):
+        """Returns True if instrument is busy"""
+        status = self.status
+        executing = not bool(status & 0b11)
+        error = bool(status & 0b100)
+        return executing or error
+
     # Properties
+
     @property
     def identification(self):
         """Read identification string from lockin"""
@@ -285,3 +293,18 @@ class SR830(SerialDevice):
                            np.clip(int(b), 1, 11))
         va, vb = res.split(',')
         return float(va), float(vb)
+
+    # Status reporting commands
+    def clearStatusRegisters(self):
+        """Clear status regiesters except status enable registers"""
+        self.write('*CLS')
+
+    @property
+    def status(self):
+        """Read status byte"""
+        return np.uint8(self.command('*STB?'))
+
+    @property
+    def error(self):
+        """Read error status byte"""
+        return np.uint8(self.command('ERRS?'))

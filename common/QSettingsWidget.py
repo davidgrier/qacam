@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import (pyqtSlot, QTimer)
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import (
     QWidget, QComboBox, QSpinBox, QDoubleSpinBox, QPushButton)
 import inspect
@@ -41,6 +41,13 @@ class QSettingsWidget(QWidget):
         self.setEnabled(True)
         logger.info('device connected')
 
+    def setDeviceProperty(self, name, value):
+        if hasattr(self.device, name):
+            setattr(self.device, name, value)
+            while self.device.busy():
+                if self.device.error:
+                    logger.warn('device error')
+
     @property
     def settings(self):
         values = dict()
@@ -53,8 +60,7 @@ class QSettingsWidget(QWidget):
     @settings.setter
     def settings(self, values):
         for name in values:
-            if hasattr(self.device, name):
-                setattr(self.device, name, values[name])
+            self.setDeviceProperty(name, values[name])
         self.updateUi
 
     @property
@@ -91,14 +97,17 @@ class QSettingsWidget(QWidget):
     @pyqtSlot(object)
     def updateDevice(self, value):
         name = str(self.sender().objectName())
-        setattr(self.device, name, value)
+        self.setDeviceProperty(name, value)
 
     @pyqtSlot(bool)
     def autoUpdateDevice(self, flag):
         autosetproperty = self.sender.objectName()
         autosetmethod = getattr(self.device, autosetproperty)
         autosetmethod()
-        QTimer.singleShot(1000., self.updateUi)
+        while self.device.busy():
+            if self.device.error:
+                logger.warn('device error')
+        self.updateUi
 
     def connectSignals(self):
         for prop in self.properties:
