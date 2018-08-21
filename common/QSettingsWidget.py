@@ -45,6 +45,7 @@ class QSettingsWidget(QWidget):
         if hasattr(self.device, name):
             setattr(self.device, name, value)
             while self.device.busy():
+                print self.device.status
                 if self.device.error:
                     logger.warn('device error')
 

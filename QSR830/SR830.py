@@ -13,6 +13,8 @@ class SR830(SerialDevice):
     def command(self, cmd):
         """Send cmd to lockin and return response"""
         self.write(cmd)
+        while not self.available():
+            print('waiting')
         return self.readln()
 
     def identify(self):
@@ -302,7 +304,9 @@ class SR830(SerialDevice):
     @property
     def status(self):
         """Read status byte"""
-        return np.uint8(self.command('*STB?'))
+        res = self.command('*STB?')
+        print(type(res), res)
+        return np.uint8(res)
 
     @property
     def error(self):
