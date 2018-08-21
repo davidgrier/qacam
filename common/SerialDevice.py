@@ -4,6 +4,7 @@ import serial
 from serial.tools.list_ports import comports
 import io
 import fcntl
+import atexit
 
 import logging
 logging.basicConfig()
@@ -65,6 +66,7 @@ class SerialDevice(object):
             self.sio = io.TextIOWrapper(buffer, newline=self.eol,
                                         line_buffering=True)
             if self.identify():
+                atexit.register(self.close)
                 return True
             self.ser.close()
         return False
