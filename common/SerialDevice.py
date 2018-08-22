@@ -86,9 +86,23 @@ class SerialDevice(object):
     def available(self):
         return self.ser.in_waiting
 
+    def command(self, cmd):
+        """Send command to device and return response"""
+        self.write(cmd)
+        while True:
+            if self.available():
+                return self.readln()
+
     def busy(self):
         """Return True if device is executing a command
 
-        This should be overridden by subclass
+        A subclass can override this method.
+        """
+        return False
+
+    def error(self):
+        """Return True if device has an error condition
+
+        A subclass can override this method.
         """
         return False

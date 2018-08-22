@@ -42,10 +42,10 @@ class QSettingsWidget(QWidget):
         logger.info('device connected')
 
     def setDeviceProperty(self, name, value):
+        """Set device property and wait for operation to compute"""
         if hasattr(self.device, name):
             setattr(self.device, name, value)
             while self.device.busy():
-                print self.device.status
                 if self.device.error:
                     logger.warn('device error')
 

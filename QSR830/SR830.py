@@ -7,15 +7,9 @@ import re
 
 class SR830(SerialDevice):
 
-    def __init__(self, baudrate=9600):
-        super(SR830, self).__init__()
-
-    def command(self, cmd):
-        """Send cmd to lockin and return response"""
-        self.write(cmd)
-        while not self.available():
-            print('waiting')
-        return self.readln()
+    def __init__(self, baudrate=9600, timeout=1):
+        super(SR830, self).__init__(baudrate=baudrate,
+                                    timeout=timeout)
 
     def identify(self):
         """Check identity of instrument"""
@@ -24,7 +18,7 @@ class SR830(SerialDevice):
 
     def busy(self):
         """Returns True if instrument is busy"""
-        status = self.status
+        status = self.status()
         executing = not bool(status & 0b11)
         error = bool(status & 0b100)
         return executing or error
@@ -301,14 +295,12 @@ class SR830(SerialDevice):
         """Clear status regiesters except status enable registers"""
         self.write('*CLS')
 
-    @property
     def status(self):
         """Read status byte"""
         res = self.command('*STB?')
-        print(type(res), res)
         return np.uint8(res)
 
-    @property
     def error(self):
         """Read error status byte"""
-        return np.uint8(self.command('ERRS?'))
+        res = self.command('ERRS?')
+        return np.uint8(res)
