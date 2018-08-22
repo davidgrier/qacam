@@ -8,6 +8,7 @@ from QPolargraph import polargraph
 from QSR830 import SR830
 from QDS345 import DS345
 from common.configure import configure
+import numpy as np
 
 import logging
 logging.basicConfig()
@@ -24,6 +25,7 @@ class Qacam(QMainWindow):
         self.configureUi()
         self.getDevices()
         self.connectSignals()
+        self.computePath()
         self.initPlots()
         self.show()
 
@@ -50,6 +52,8 @@ class Qacam(QMainWindow):
         self.ui.functionGenerator.ui.offset.setDisabled(True)
         self.ui.lockin.ui.frameAuto.hide()
         self.ui.lockin.ui.frameReference.hide()
+        self.pathItem = pg.PlotDataItem()
+        self.ui.plot.addItem(self.pathItem)
 
     def connectSignals(self):
         self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)
@@ -68,6 +72,22 @@ class Qacam(QMainWindow):
         self.config.save(self.ui.functionGenerator)
         self.config.save(self.ui.polargraph)
         logger.info('Configuration Saved')
+
+    def computePath(self):
+        y0 = np.arange(0., self.polargraph.height, self.polargraph.dy)
+        y0 += self.polargraph.dy
+        y1 = y0 + self.polargraph.dy/2.
+        x0 = self.polargraph.width/2.
+        r0 = zip([x0]*y0.size, y0)
+        r1 = zip([-x0]*y1.size, y1)
+        r = []
+        for i in range(y0.size):
+            self.r.append(next(r0))
+            self.r.append(next(r1))
+        self.path = np.array(r)
+
+    def plotPath(self):
+        self.pathItem.setData(self.path[:, 0], self.path[:, 1])
 
 
 if __name__ == "__main__":
