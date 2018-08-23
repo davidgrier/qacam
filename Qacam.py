@@ -59,6 +59,10 @@ class Qacam(QMainWindow):
     def connectSignals(self):
         self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)
         self.ui.actionSaveSettings.triggered.connect(self.saveConfiguration)
+        ui = self.ui.polargraph.ui
+        ui.height.valueChanged.connect(self.updatePath)
+        ui.width.valueChanged.connect(self.updatePath)
+        ui.dy.valueChanged.connect(self.updatePath)
 
     def initPlots(self):
         for plot in [self.ui.plot, self.ui.plotAmplitude, self.ui.plotPhase]:
@@ -75,6 +79,11 @@ class Qacam(QMainWindow):
         self.config.save(self.ui.functionGenerator)
         self.config.save(self.ui.polargraph)
         logger.info('Configuration Saved')
+
+    @pyqtSlot()
+    def updatePath(self):
+        self.computePath()
+        self.plotPath()
 
     def computePath(self):
         polargraph = self.ui.polargraph.device
