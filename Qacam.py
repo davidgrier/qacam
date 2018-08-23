@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, Qt
 from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
 from QPolargraph import polargraph
 from QSR830 import SR830
 from QDS345 import DS345
-from common.configure import configure
+from common.Configure import Configure
 import numpy as np
 
 import logging
@@ -30,7 +30,7 @@ class Qacam(QMainWindow):
         self.show()
 
     def getDevices(self):
-        self.config = configure(self)
+        self.config = Configure(self)
         try:
             self.ui.lockin.device = SR830()
             self.config.restore(self.ui.lockin)
@@ -52,7 +52,8 @@ class Qacam(QMainWindow):
         self.ui.functionGenerator.ui.offset.setDisabled(True)
         self.ui.lockin.ui.frameAuto.hide()
         self.ui.lockin.ui.frameReference.hide()
-        self.pathItem = pg.PlotDataItem()
+        pen = pg.mkPen('r', style=Qt.DotLine)
+        self.pathItem = pg.PlotDataItem(pen=pen)
         self.ui.plot.addItem(self.pathItem)
 
     def connectSignals(self):
@@ -65,6 +66,8 @@ class Qacam(QMainWindow):
             plot.setAspectLocked(ratio=1)
             plot.invertY(True)
             plot.showGrid(True, True, 0.2)
+            self.computePath()
+            self.plotPath()
 
     @pyqtSlot()
     def saveConfiguration(self):
@@ -74,17 +77,18 @@ class Qacam(QMainWindow):
         logger.info('Configuration Saved')
 
     def computePath(self):
-        y0 = np.arange(0., self.polargraph.height, self.polargraph.dy)
-        y0 += self.polargraph.dy
-        y1 = y0 + self.polargraph.dy/2.
-        x0 = self.polargraph.width/2.
+        polargraph = self.ui.polargraph.device
+        y0 = np.arange(0., polargraph.height, polargraph.dy)
+        y0 += polargraph.dy
+        y1 = y0 + polargraph.dy/2.
+        x0 = polargraph.width/2.
         r0 = zip([x0]*y0.size, y0)
         r1 = zip([-x0]*y1.size, y1)
-        r = []
+        coords = []
         for i in range(y0.size):
-            self.r.append(next(r0))
-            self.r.append(next(r1))
-        self.path = np.array(r)
+            coords.append(r0[i])
+            coords.append(r1[i])
+        self.path = np.array(coords)
 
     def plotPath(self):
         self.pathItem.setData(self.path[:, 0], self.path[:, 1])
