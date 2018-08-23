@@ -55,6 +55,13 @@ class Qacam(QMainWindow):
         pen = pg.mkPen('r', style=Qt.DotLine)
         self.pathItem = pg.PlotDataItem(pen=pen)
         self.ui.plot.addItem(self.pathItem)
+        pen = pg.mkPen('k', thick=3)
+        brush = pg.mkBrush('y')
+        self.beltItem = pg.PlotDataItem(pen=pen,
+                                        symbol='o',
+                                        symbolBrush=brush,
+                                        symbolPen=pen)
+        self.ui.plot.addItem(self.beltItem)
 
     def connectSignals(self):
         self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)
@@ -72,6 +79,7 @@ class Qacam(QMainWindow):
             plot.showGrid(True, True, 0.2)
             self.computePath()
             self.plotPath()
+            self.plotBelt()
 
     @pyqtSlot()
     def saveConfiguration(self):
@@ -88,12 +96,12 @@ class Qacam(QMainWindow):
     def computePath(self):
         polargraph = self.ui.polargraph.device
         y0 = np.arange(0., polargraph.height, polargraph.dy)
-        y0 += polargraph.dy
+        y0 += polargraph.y0
         y1 = y0 + polargraph.dy/2.
         x0 = polargraph.width/2.
         r0 = zip([x0]*y0.size, y0)
         r1 = zip([-x0]*y1.size, y1)
-        coords = []
+        coords = [(0., polargraph.y0)]
         for i in range(y0.size):
             coords.append(r0[i])
             coords.append(r1[i])
@@ -101,6 +109,12 @@ class Qacam(QMainWindow):
 
     def plotPath(self):
         self.pathItem.setData(self.path[:, 0], self.path[:, 1])
+
+    def plotBelt(self):
+        polargraph = self.ui.polargraph.device
+        x = [-polargraph.L/2, 0, polargraph.L/2]
+        y = [0, polargraph.y0, 0]
+        self.beltItem.setData(x, y)
 
 
 if __name__ == "__main__":
