@@ -1,4 +1,4 @@
 from QPolargraphSettings import QPolargraphSettings
-from polargraph import polargraph
+from Polargraph import Polargraph
 
-all = ['QPolargraphSettings', 'polargraph']
+all = ['QPolargraphSettings', 'Polargraph']

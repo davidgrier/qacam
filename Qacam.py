@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import pyqtSlot, Qt
 from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
-from QPolargraph import polargraph
+from QPolargraph import Polargraph
 from QSR830 import SR830
 from QDS345 import DS345
 from common.Configure import Configure
@@ -42,7 +42,7 @@ class Qacam(QMainWindow):
         except ValueError:
             logger.warn('No function generator detected')
         try:
-            self.ui.polargraph.device = polargraph()
+            self.ui.polargraph.device = Polargraph()
             self.config.restore(self.ui.polargraph)
         except ValueError:
             logger.warn('No polargraph detected')
@@ -65,6 +65,7 @@ class Qacam(QMainWindow):
 
     def connectSignals(self):
         self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)
+        self.ui.scan.clicked.connect(self.scan)
         self.ui.actionSaveSettings.triggered.connect(self.saveConfiguration)
         ui = self.ui.polargraph.ui
         ui.height.valueChanged.connect(self.updatePath)
@@ -110,11 +111,24 @@ class Qacam(QMainWindow):
     def plotPath(self):
         self.pathItem.setData(self.path[:, 0], self.path[:, 1])
 
-    def plotBelt(self):
+    def plotBelt(self, xp=None, yp=None):
         polargraph = self.ui.polargraph.device
-        x = [-polargraph.L/2, 0, polargraph.L/2]
-        y = [0, polargraph.y0, 0]
+        if xp is None:
+            xp = 0.
+        if yp is None:
+            yp = polargraph.y0
+        x = [-polargraph.L/2, xp, polargraph.L/2]
+        y = [0, yp, 0]
         self.beltItem.setData(x, y)
+
+    @pyqtSlot()
+    def scan(self):
+        polargraph = self.ui.polargraph.device
+
+        nsteps = self.path[:, 0].size
+        for n in range(nsteps):
+            polargraph.goto(self.path[n, 0], self.path[n, 1])
+            print('current position', polargraph.position())
 
 
 if __name__ == "__main__":

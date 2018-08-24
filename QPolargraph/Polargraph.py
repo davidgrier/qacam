@@ -29,6 +29,7 @@ class motors(SerialDevice):
 
     def goto(self, n1, n2):
         """Move to index (n1, n2)"""
+        print('go to:', n1, n2)
         self.write('M:%d:%d' % (n1, n2))
 
     def release(self):
@@ -45,7 +46,7 @@ class motors(SerialDevice):
             running = 0
         return bool(int(running))
 
-    def stepNumbers(self):
+    def indexes(self):
         """Returns current step numbers for motors"""
         self.write('P')
         try:
@@ -56,6 +57,7 @@ class motors(SerialDevice):
             logger.warn('Did not read position: {}'.format(ex))
             self.n1 = 0
             self.n2 = 0
+        print(self.n1, self.n2)
         return self.n1, self.n2
 
     @property
@@ -66,10 +68,10 @@ class motors(SerialDevice):
     @stepSpeed.setter
     def stepSpeed(self, speed):
         self._stepSpeed = float(speed)
-        self.write('V%f' % self._stepSpeed)
+        self.write('V:%f' % self._stepSpeed)
 
 
-class polargraph(motors):
+class Polargraph(motors):
     """Control a polargraph
 
     The polargraph consists of two stepper motors with GT2 gears
@@ -91,7 +93,7 @@ class polargraph(motors):
                  height=0.6,  # height of scan area [m]
                  dy=0.005):  # vertical displacement between scan lines [m]
 
-        super(polargraph, self).__init__()
+        super(Polargraph, self).__init__()
 
         # Belt drive
         self.unit = float(unit)
@@ -109,16 +111,20 @@ class polargraph(motors):
         self.height = float(height)
         self.dy = float(dy)
 
+        self.ds = 1e-3 * self.unit * self.circumference / self.steps
+        # distance traveled per step [m]
         self.s0 = np.sqrt((self.L / 2.)**2 + (self.y0)**2)
-        # distance (length of belt) from motor to payload at home position
+        # distance (length of belt) from motor to payload at home position [m]
+        print('init:', self.s0, self.ds)
 
     def goto(self, x, y):
         """Move payload to position (x,y)"""
-        s1 = np.sqrt((self.L / 2. - x)**2 + (y + self.y0)**2)
-        s2 = np.sqrt((self.L / 2. + x)**2 + (y + self.y0)**2)
+        s1 = np.sqrt((self.L / 2. - x)**2 + (y - self.y0)**2)
+        s2 = np.sqrt((self.L / 2. + x)**2 + (y - self.y0)**2)
         n1 = np.rint((s1 - self.s0) / self.ds).astype(int)
         n2 = np.rint((self.s0 - s2) / self.ds).astype(int)
-        super(polargraph, self).goto(n1, n2)
+        print('target:', x, y, n1, n2)
+        super(Polargraph, self).goto(n1, n2)
 
     def home(self):
         """Move payload to home position"""
@@ -126,7 +132,7 @@ class polargraph(motors):
 
     def position(self):
         """Current coordinates in meters"""
-        n1, n2 = self.steps()
+        n1, n2 = self.indexes()
         s1 = self.s0 + n1*self.ds
         s2 = self.s0 - n2*self.ds
         x = (s2**2 - s1**2)/(2. * self.L)
@@ -141,12 +147,3 @@ class polargraph(motors):
     @speed.setter
     def speed(self, value):
         self.stepSpeed = value * self.steps / (self.circumference * self.unit)
-
-
-def main():
-    a = motors()
-    print a.steps(), a.running()
-
-
-if __name__ == '__main__':
-    main()
