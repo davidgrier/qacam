@@ -9,11 +9,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-class motors(SerialDevice):
+class Motors(SerialDevice):
     """Control the pair of stepper motors driving a polargraph"""
 
     def __init__(self):
-        super(motors, self).__init__(eol='\n',
+        super(Motors, self).__init__(eol='\n',
                                      manufacturer='Arduino',
                                      timeout=1)
         self.n1 = 0
@@ -71,7 +71,7 @@ class motors(SerialDevice):
         self.write('V:%f' % self._stepSpeed)
 
 
-class Polargraph(motors):
+class Polargraph(Motors):
     """Control a polargraph
 
     The polargraph consists of two stepper motors with GT2 gears
