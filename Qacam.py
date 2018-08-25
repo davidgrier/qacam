@@ -95,7 +95,10 @@ class Qacam(QMainWindow):
         self.plotPath()
 
     def computePath(self):
+        self.path = None
         polargraph = self.ui.polargraph.device
+        if polargraph is None:
+            return
         y0 = np.arange(0., polargraph.height, polargraph.dy)
         y0 += polargraph.y0
         y1 = y0 + polargraph.dy/2.
@@ -109,10 +112,13 @@ class Qacam(QMainWindow):
         self.path = np.array(coords)
 
     def plotPath(self):
-        self.pathItem.setData(self.path[:, 0], self.path[:, 1])
+        if self.path is not None:
+            self.pathItem.setData(self.path[:, 0], self.path[:, 1])
 
     def plotBelt(self, xp=None, yp=None):
         polargraph = self.ui.polargraph.device
+        if polargraph is None:
+            return
         if xp is None:
             xp = 0.
         if yp is None:
@@ -124,7 +130,8 @@ class Qacam(QMainWindow):
     @pyqtSlot()
     def scan(self):
         polargraph = self.ui.polargraph.device
-
+        if polargraph is None:
+            return
         nsteps = self.path[:, 0].size
         for n in range(nsteps):
             polargraph.goto(self.path[n, 0], self.path[n, 1])
