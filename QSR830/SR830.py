@@ -28,9 +28,11 @@ class SR830(SerialDevice):
     @property
     def identification(self):
         """Read identification string from lockin"""
-        return self.command('*IDN?')
+        self.write('*IDN?')
+        return self.readln()
 
     # Reference and phase commands
+
     @property
     def phase(self):
         """Reference phase shift in degrees"""
