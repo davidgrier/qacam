@@ -86,7 +86,7 @@ class Polargraph(Motors):
                  circumference=25.,  # belt teeth per revolution
                  steps=200.,  # motor steps per revolution
                  stepSpeed=500.,
-                 L=1.,  # separation between motors [m]
+                 ell=1.,  # separation between motors [m]
                  y0=0.1,  # rest displacement from motors' centerline [m]
                  y1=0.,  # vertical start of scan area [m]
                  width=0.6,  # width of scan area [m]
@@ -102,7 +102,7 @@ class Polargraph(Motors):
         self.stepSpeed = float(stepSpeed)
 
         # Motor configuration
-        self.L = float(L)
+        self.ell = float(ell)
         self.y0 = float(y0)
 
         # Scan configuration
@@ -113,14 +113,14 @@ class Polargraph(Motors):
 
         self.ds = 1e-3 * self.unit * self.circumference / self.steps
         # distance traveled per step [m]
-        self.s0 = np.sqrt((self.L / 2.)**2 + (self.y0)**2)
+        self.s0 = np.sqrt((self.ell / 2.)**2 + (self.y0)**2)
         # distance (length of belt) from motor to payload at home position [m]
         print('init:', self.s0, self.ds)
 
     def goto(self, x, y):
         """Move payload to position (x,y)"""
-        s1 = np.sqrt((self.L / 2. - x)**2 + (y - self.y0)**2)
-        s2 = np.sqrt((self.L / 2. + x)**2 + (y - self.y0)**2)
+        s1 = np.sqrt((self.ell / 2. - x)**2 + (y - self.y0)**2)
+        s2 = np.sqrt((self.ell / 2. + x)**2 + (y - self.y0)**2)
         n1 = np.rint((s1 - self.s0) / self.ds).astype(int)
         n2 = np.rint((self.s0 - s2) / self.ds).astype(int)
         print('target:', x, y, n1, n2)
@@ -135,8 +135,8 @@ class Polargraph(Motors):
         n1, n2 = self.indexes()
         s1 = self.s0 + n1*self.ds
         s2 = self.s0 - n2*self.ds
-        x = (s2**2 - s1**2)/(2. * self.L)
-        y = np.sqrt((s1**2 + s2**2)/2. - self.L**2/4. - x**2) - self.y0
+        x = (s2**2 - s1**2)/(2. * self.ell)
+        y = np.sqrt((s1**2 + s2**2)/2. - self.ell**2/4. - x**2) - self.y0
         return x, y
 
     @property
