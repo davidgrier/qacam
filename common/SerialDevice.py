@@ -78,10 +78,13 @@ class SerialDevice(object):
         self.ser.close()
 
     def write(self, str):
-        self.sio.write(unicode(str + self.eol))
+        logger.debug(str)
+        self.sio.write((str + self.eol).encode())
 
     def readln(self):
-        return self.sio.readline().decode().strip()
+        str = self.sio.readline().decode().strip()
+        logger.debug(str)
+        return(str)
 
     def available(self):
         return self.ser.in_waiting
@@ -89,9 +92,7 @@ class SerialDevice(object):
     def command(self, cmd):
         """Send command to device and return response"""
         self.write(cmd)
-        while True:
-            if self.available():
-                return self.readln()
+        return self.readln()
 
     def busy(self):
         """Return True if device is executing a command

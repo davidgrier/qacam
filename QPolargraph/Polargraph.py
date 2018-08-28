@@ -18,10 +18,10 @@ class Motors(SerialDevice):
                                      timeout=1)
         self.n1 = 0
         self.n2 = 0
-
-    def identify(self):
         logger.info('Waiting for Arduino serial port')
         sleep(2)
+
+    def identify(self):
         self.write('Q')
         acam = 'acam2' in self.readln()
         logger.info('Arduino running acam2: {}'.format(acam))

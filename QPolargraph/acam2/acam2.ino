@@ -3,11 +3,12 @@
  * Sketch to control stepper motors via serial interface
  *
  * Commands implemented with examples:
+ * - V:500 : Set motor speed to 500 steps/second
  * - M:-1000:50 : Move motor 1 to position -1000 and motor 2 to 50
  * - S : Stop (release) motors
+ * - Q : Query software ID
  * - P : Query position of motors
  * - R : Query whether motors are running
- * - V:500 : Set both motors to 500 steps/second
  */
 
 #include <stdio.h>
@@ -28,8 +29,8 @@ char cmd[bufsize];    // command string
 int len = 0;
 
 /* flags */
-bool command_ready; // command string received
-bool is_running;    // true if steppers are running
+boolean command_ready = false; // command string received
+boolean is_running = false;    // true if steppers are running
 
 /* motor positions (steps) */
 long n1 = 0;
@@ -84,6 +85,10 @@ void release_motors() {
   motor2->release();
 }
 
+void query_identity() {
+  Serial.println("acam2");
+}
+
 void query_position() {
   n1 = stepper1.currentPosition();
   n2 = stepper2.currentPosition();
@@ -100,21 +105,17 @@ void query_isrunning() {
   Serial.println(is_running);
 }
 
-void query_identity() {
-  Serial.println("acam2");
-}
-
 /* Dispatch commands */
 void parse_command() {
   switch (cmd[0]) {
     case 'P':
       query_position();
       break;
-    case 'M':
-      move_to();
-      break;
     case 'R':
       query_isrunning();
+      break;
+    case 'M':
+      move_to();
       break;
     case 'V':
       set_speed();
@@ -126,7 +127,8 @@ void parse_command() {
       break;
     default:
       break;
-  } 
+  }
+  command_ready = false;
 }
 
 void debug_command() {
@@ -154,8 +156,6 @@ void setup() {
 void loop() {
     if (command_ready) {
       parse_command();
-      len = 0;
-      command_ready = false;
     }
     is_running = steppers.run();
 }
@@ -163,10 +163,11 @@ void loop() {
 void serialEvent() {
   char c;
 
-  while (Serial.available()) {
-    c = (char) Serial.read();
+  while (Serial.available() > 0 && command_ready == false) {
+    c = Serial.read();
     if (c == '\n') {
       cmd[len] = '\0';
+      len = 0;
       command_ready = true;
     } else {
       cmd[len++] = c;
