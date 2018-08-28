@@ -2,13 +2,13 @@
 
 import serial
 from serial.tools.list_ports import comports
-import io
 import fcntl
 import atexit
 
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class SerialDevice(object):
@@ -56,15 +56,14 @@ class SerialDevice(object):
                         logger.info('{} is busy'.format(self.ser.port))
                         self.ser.close()
                         continue
+                    self.ser.flushInput()
+                    self.ser.flushOutput()
                 else:
                     logger.warning('Could not open {}'.format(self.ser.port))
                     continue
             except serial.SerialException as ex:
                 logger.warning('{} is unavailable: {}'.format(port, ex))
                 continue
-            buffer = io.BufferedRWPair(self.ser, self.ser, 1)
-            self.sio = io.TextIOWrapper(buffer, newline=self.eol,
-                                        line_buffering=True)
             if self.identify():
                 atexit.register(self.close)
                 return True
@@ -78,13 +77,14 @@ class SerialDevice(object):
         self.ser.close()
 
     def write(self, str):
-        logger.debug(str)
-        self.sio.write((str + self.eol).encode())
+        logger.debug('write: {}'.format(str))
+        self.ser.write((str + self.eol).encode())
+        self.ser.flush()
 
     def readln(self):
-        str = self.sio.readline().decode().strip()
-        logger.debug(str)
-        return(str)
+        str = self.ser.read_until(terminator=self.eol).decode().strip()
+        logger.debug('read: {}'.format(str))
+        return str
 
     def available(self):
         return self.ser.in_waiting

@@ -117,13 +117,13 @@ class Qacam(QMainWindow):
             self.pathItem.setData(self.path[:, 0], self.path[:, 1])
 
     def plotBelt(self, xp=None, yp=None):
-        L = self.ui.polargraph.ui.L.value()
+        ell = self.ui.polargraph.ui.ell.value()
 
         if xp is None:
             xp = 0.
         if yp is None:
             yp = self.ui.polargraph.ui.y0.value()
-        x = [-L/2, xp, L/2]
+        x = [-ell/2, xp, ell/2]
         y = [0, yp, 0]
         self.beltItem.setData(x, y)
 
