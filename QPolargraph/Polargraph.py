@@ -18,29 +18,28 @@ class Motors(SerialDevice):
                                      timeout=1)
         self.n1 = 0
         self.n2 = 0
-        logger.info('Waiting for Arduino serial port')
-        sleep(2)
 
     def identify(self):
-        self.write('Q')
-        acam = 'acam2' in self.readln()
+        logger.info('Waiting for Arduino serial port')
+        sleep(2)
+        res = self.command('Q')
+        acam = 'acam2' in res
         logger.info('Arduino running acam2: {}'.format(acam))
         return acam
 
     def goto(self, n1, n2):
         """Move to index (n1, n2)"""
-        print('go to:', n1, n2)
-        self.write('M:%d:%d' % (n1, n2))
+        self.command('M:%d:%d' % (n1, n2))
 
     def release(self):
         """Stop and release motors"""
-        self.write('S')
+        self.command('S')
 
     def running(self):
         """Returns True if motors are running"""
-        self.write('R')
         try:
-            header, running = self.readln().split(':')
+            res = self.command('R')
+            header, running = res.split(':')
         except Exception as ex:
             logger.warn('Could not read running status: {}'.format(ex))
             running = 0
@@ -48,16 +47,15 @@ class Motors(SerialDevice):
 
     def indexes(self):
         """Returns current step numbers for motors"""
-        self.write('P')
         try:
-            header, n1, n2 = self.readln().split(':')
+            res = self.command('P')
+            header, n1, n2 = res.split(':')
             self.n1 = int(n1)
             self.n2 = int(n2)
         except Exception as ex:
             logger.warn('Did not read position: {}'.format(ex))
             self.n1 = 0
             self.n2 = 0
-        print(self.n1, self.n2)
         return self.n1, self.n2
 
     @property
@@ -68,7 +66,7 @@ class Motors(SerialDevice):
     @stepSpeed.setter
     def stepSpeed(self, speed):
         self._stepSpeed = float(speed)
-        self.write('V:%f' % self._stepSpeed)
+        self.command('V:%f' % self._stepSpeed)
 
 
 class Polargraph(Motors):
@@ -111,11 +109,10 @@ class Polargraph(Motors):
         self.height = float(height)
         self.dy = float(dy)
 
-        self.ds = 1e-3 * self.unit * self.circumference / self.steps
         # distance traveled per step [m]
-        self.s0 = np.sqrt((self.ell / 2.)**2 + (self.y0)**2)
+        self.ds = 1e-3 * self.unit * self.circumference / self.steps
         # distance (length of belt) from motor to payload at home position [m]
-        print('init:', self.s0, self.ds)
+        self.s0 = np.sqrt((self.ell / 2.)**2 + (self.y0)**2)
 
     def goto(self, x, y):
         """Move payload to position (x,y)"""
@@ -123,7 +120,6 @@ class Polargraph(Motors):
         s2 = np.sqrt((self.ell / 2. + x)**2 + (y - self.y0)**2)
         n1 = np.rint((s1 - self.s0) / self.ds).astype(int)
         n2 = np.rint((self.s0 - s2) / self.ds).astype(int)
-        print('target:', x, y, n1, n2)
         super(Polargraph, self).goto(n1, n2)
 
     def home(self):

@@ -32,6 +32,11 @@ class Qacam(QMainWindow):
     def getDevices(self):
         self.config = Configure(self)
         try:
+            self.ui.polargraph.device = Polargraph()
+            self.config.restore(self.ui.polargraph)
+        except ValueError:
+            logger.warn('No polargraph detected')
+        try:
             self.ui.lockin.device = SR830()
             self.config.restore(self.ui.lockin)
         except ValueError:
@@ -41,11 +46,6 @@ class Qacam(QMainWindow):
             self.config.restore(self.ui.functionGenerator)
         except ValueError:
             logger.warn('No function generator detected')
-        try:
-            self.ui.polargraph.device = Polargraph()
-            self.config.restore(self.ui.polargraph)
-        except ValueError:
-            logger.warn('No polargraph detected')
 
     def configureUi(self):
         self.ui.polargraph.ui.frameBelt.hide()
@@ -133,9 +133,10 @@ class Qacam(QMainWindow):
         if polargraph is None:
             return
         nsteps = self.path[:, 0].size
-        for n in range(nsteps):
+        for n in range(2):
             polargraph.goto(self.path[n, 0], self.path[n, 1])
-            print('current position', polargraph.position())
+            while polargraph.running():
+                print('moving', polargraph.position())
 
 
 if __name__ == "__main__":

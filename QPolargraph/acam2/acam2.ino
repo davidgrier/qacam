@@ -66,6 +66,7 @@ void set_speed() {
   sscanf(cmd, "V:%f", &v);
   stepper1.setMaxSpeed(v);
   stepper2.setMaxSpeed(v);
+  Serial.println('V');
 }
 
 void move_to() {
@@ -78,11 +79,13 @@ void move_to() {
   target[0] = n1;
   target[1] = n2;
   steppers.moveTo(target);
+  Serial.println('M');
 }
 
 void release_motors() {
   motor1->release();
   motor2->release();
+  Serial.println('S');
 }
 
 void query_identity() {
@@ -119,6 +122,7 @@ void parse_command() {
       break;
     case 'V':
       set_speed();
+      break;
     case 'S':
       release_motors();
       break;
@@ -126,8 +130,10 @@ void parse_command() {
       query_identity();
       break;
     default:
+      Serial.println(cmd);
       break;
   }
+  len = 0;
   command_ready = false;
 }
 
@@ -163,11 +169,10 @@ void loop() {
 void serialEvent() {
   char c;
 
-  while (Serial.available() > 0 && command_ready == false) {
+  if (Serial.available() > 0 && command_ready == false) {
     c = Serial.read();
     if (c == '\n') {
       cmd[len] = '\0';
-      len = 0;
       command_ready = true;
     } else {
       cmd[len++] = c;
