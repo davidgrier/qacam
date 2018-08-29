@@ -57,29 +57,31 @@ AccelStepper stepper1(forwardstep1, backwardstep1);
 AccelStepper stepper2(forwardstep2, backwardstep2);
 MultiStepper steppers;
 
-void set_speed() {
-  float v;
-  
-  if (len < 2) {
-    return;
-  }
-  sscanf(cmd, "V:%f", &v);
-  stepper1.setMaxSpeed(v);
-  stepper2.setMaxSpeed(v);
-  Serial.println('V');
-}
-
-void move_to() {
+void set_target() {
   long target[2];
   
-  if (len < 2) {
-    return;
-  }
-  sscanf(cmd, "M:%ld:%ld", &n1, &n2);
+  sscanf(cmd, "G:%ld:%ld", &n1, &n2);
   target[0] = n1;
   target[1] = n2;
   steppers.moveTo(target);
-  Serial.println('M');
+  Serial.println('G');
+}
+
+void getset_speed() {
+  float v;
+  
+  if (len == 1) {
+    v = stepper1.maxSpeed();
+    Serial.print('V');
+    Serial.print(':');
+    Serial.println(v);
+  }
+  else {
+    v = atof(&cmd[2]);
+    stepper1.setMaxSpeed(v);
+    stepper2.setMaxSpeed(v);
+    Serial.println('V');
+  }
 }
 
 void release_motors() {
@@ -92,14 +94,22 @@ void query_identity() {
   Serial.println("acam2");
 }
 
-void query_position() {
-  n1 = stepper1.currentPosition();
-  n2 = stepper2.currentPosition();
-  Serial.print('P');
-  Serial.print(':');
-  Serial.print(n1);
-  Serial.print(':');
-  Serial.println(n2);
+void getset_position() {
+  if (len == 1) {
+    n1 = stepper1.currentPosition();
+    n2 = stepper2.currentPosition();
+    Serial.print('P');
+    Serial.print(':');
+    Serial.print(n1);
+    Serial.print(':');
+    Serial.println(n2);
+  }
+  else {
+    sscanf(cmd, "P:%ld:%ld", &n1, &n2);
+    stepper1.setCurrentPosition(n1);
+    stepper2.setCurrentPosition(n2);
+    Serial.println('P');
+  }
 }
 
 void query_isrunning() {
@@ -112,16 +122,16 @@ void query_isrunning() {
 void parse_command() {
   switch (cmd[0]) {
     case 'P':
-      query_position();
+      getset_position();
+      break;
+    case 'G':
+      set_target();
       break;
     case 'R':
       query_isrunning();
       break;
-    case 'M':
-      move_to();
-      break;
     case 'V':
-      set_speed();
+      getset_speed();
       break;
     case 'S':
       release_motors();

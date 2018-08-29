@@ -16,8 +16,6 @@ class Motors(SerialDevice):
         super(Motors, self).__init__(eol='\n',
                                      manufacturer='Arduino',
                                      timeout=1)
-        self.n1 = 0
-        self.n2 = 0
 
     def identify(self):
         logger.info('Waiting for Arduino serial port')
@@ -29,7 +27,11 @@ class Motors(SerialDevice):
 
     def goto(self, n1, n2):
         """Move to index (n1, n2)"""
-        self.command('M:%d:%d' % (n1, n2))
+        self.command('G:%d:%d' % (n1, n2))
+
+    def home(self):
+        """Move to home position"""
+        self.goto(0, 0)
 
     def release(self):
         """Stop and release motors"""
@@ -45,28 +47,39 @@ class Motors(SerialDevice):
             running = 0
         return bool(int(running))
 
+    @property
     def indexes(self):
         """Returns current step numbers for motors"""
         try:
             res = self.command('P')
             header, n1, n2 = res.split(':')
-            self.n1 = int(n1)
-            self.n2 = int(n2)
+            n1 = int(n1)
+            n2 = int(n2)
         except Exception as ex:
             logger.warn('Did not read position: {}'.format(ex))
-            self.n1 = 0
-            self.n2 = 0
-        return self.n1, self.n2
+            n1 = 0
+            n2 = 0
+        return n1, n2
+
+    @indexes.setter
+    def indexes(self, n1, n2):
+        self.command('P:%d:%d' % (n1, n2))
 
     @property
-    def stepSpeed(self):
+    def motor_speed(self):
         """Maximum motor speed in steps/s"""
-        return self._stepSpeed
+        try:
+            res = self.command('V')
+            header, speed = res.split(':')
+        except Exception as ex:
+            logger.warn('Could not read maximum speed: {}'.format(ex))
+            speed = 0
+        return float(speed)
 
-    @stepSpeed.setter
-    def stepSpeed(self, speed):
-        self._stepSpeed = float(speed)
-        self.command('V:%f' % self._stepSpeed)
+    @motor_speed.setter
+    def motor_speed(self, speed):
+        res = self.command('V:%f' % speed)
+        logger.debug('speed: {}'.format(res))
 
 
 class Polargraph(Motors):
@@ -83,7 +96,6 @@ class Polargraph(Motors):
                  unit=2.,  # size of one timing belt tooth [mm]
                  circumference=25.,  # belt teeth per revolution
                  steps=200.,  # motor steps per revolution
-                 stepSpeed=500.,
                  ell=1.,  # separation between motors [m]
                  y0=0.1,  # rest displacement from motors' centerline [m]
                  y1=0.,  # vertical start of scan area [m]
@@ -97,7 +109,6 @@ class Polargraph(Motors):
         self.unit = float(unit)
         self.circumference = float(circumference)
         self.steps = float(steps)
-        self.stepSpeed = float(stepSpeed)
 
         # Motor configuration
         self.ell = float(ell)
@@ -122,13 +133,10 @@ class Polargraph(Motors):
         n2 = np.rint((self.s0 - s2) / self.ds).astype(int)
         super(Polargraph, self).goto(n1, n2)
 
-    def home(self):
-        """Move payload to home position"""
-        self.goto(0, 0)
-
+    @property
     def position(self):
         """Current coordinates in meters"""
-        n1, n2 = self.indexes()
+        n1, n2 = self.indexes
         s1 = self.s0 + n1*self.ds
         s2 = self.s0 - n2*self.ds
         x = (s2**2 - s1**2)/(2. * self.ell)
@@ -138,8 +146,8 @@ class Polargraph(Motors):
     @property
     def speed(self):
         """Translation speed in mm/s"""
-        return self.stepSpeed * self.circumference * self.unit / self.steps
+        return self.motor_speed * self.circumference * self.unit / self.steps
 
     @speed.setter
     def speed(self, value):
-        self.stepSpeed = value * self.steps / (self.circumference * self.unit)
+        self.motor_speed = value * self.steps / (self.circumference * self.unit)
