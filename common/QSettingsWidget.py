@@ -95,7 +95,8 @@ class QSettingsWidget(QWidget):
             else:
                 logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))
 
-    @pyqtSlot(object)
+    @pyqtSlot(int)
+    @pyqtSlot(float)
     def updateDevice(self, value):
         name = str(self.sender().objectName())
         self.setDeviceProperty(name, value)
