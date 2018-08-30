@@ -8,6 +8,7 @@ import inspect
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class QSettingsWidget(QWidget):
@@ -74,9 +75,10 @@ class QSettingsWidget(QWidget):
         uprops = [name for name, _ in inspect.getmembers(self.ui)]
         props = [name for name in dprops if name in uprops]
         self._properties = [name for name in props if '_' not in name]
+        logger.debug(self._properties)
 
     def configureUi(self):
-        pass
+        logger.debug('configureUi should be overridden')
 
     @pyqtSlot()
     def updateUi(self):

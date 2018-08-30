@@ -10,16 +10,16 @@ class QPolargraphSettings(QSettingsWidget):
 
     def __init__(self, parent=None, device=None):
         super(QPolargraphSettings, self).__init__(parent=parent,
-                                                  device=device,
                                                   ui=Ui_Polargraph())
+        self.device = device
 
-    @QtCore.pyqtSlot(object)
+    @QtCore.pyqtSlot(float)
     def limitRange(self, value):
-        self.width.setMaximum(min(self.width.value(), 0.9*value))
-        self.height.setMaximum(min(self.height.value(), 0.9*value))
+        self.ui.width.setMaximum(0.9*value)
+        self.ui.height.setMaximum(0.9*value)
 
-    def ConfigureUi(self):
-        self.L.valueChanged[QtCore.double].connect(self.limitRange)
+    def configureUi(self):
+        self.ui.ell.valueChanged.connect(self.limitRange)
 
 
 if __name__ == "__main__":

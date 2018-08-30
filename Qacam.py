@@ -106,7 +106,7 @@ class Qacam(QMainWindow):
         x0 = width/2.
         rright = zip([x0]*npts, yright)
         rleft = zip([-x0]*npts, yleft)
-        coords = [(0., 0)]
+        coords = []
         for i in range(npts):
             coords.append(rright[i])
             coords.append(rleft[i])
@@ -116,13 +116,15 @@ class Qacam(QMainWindow):
         if self.path is not None:
             self.pathItem.setData(self.path[:, 0], self.path[:, 1])
 
-    def plotBelt(self, xp=None, yp=None):
+    def plotBelt(self, pos=None):
         ell = self.ui.polargraph.ui.ell.value()
 
-        if xp is None:
+        if pos is None:
             xp = 0.
-        if yp is None:
             yp = self.ui.polargraph.ui.y0.value()
+        else:
+            xp, yp = pos
+        print(xp, yp)
         x = [-ell/2, xp, ell/2]
         y = [0, yp, 0]
         self.beltItem.setData(x, y)
@@ -136,7 +138,8 @@ class Qacam(QMainWindow):
         for n in range(2):
             polargraph.goto(self.path[n, 0], self.path[n, 1])
             while polargraph.running():
-                print('moving', polargraph.position())
+                pos = polargraph.position
+                self.plotBelt(pos)
 
 
 if __name__ == "__main__":

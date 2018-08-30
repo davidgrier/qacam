@@ -127,8 +127,8 @@ class Polargraph(Motors):
 
     def goto(self, x, y):
         """Move payload to position (x,y)"""
-        s1 = np.sqrt((self.ell / 2. - x)**2 + (y - self.y0)**2)
-        s2 = np.sqrt((self.ell / 2. + x)**2 + (y - self.y0)**2)
+        s1 = np.sqrt((self.ell / 2. - x)**2 + y**2)
+        s2 = np.sqrt((self.ell / 2. + x)**2 + y**2)
         n1 = np.rint((s1 - self.s0) / self.ds).astype(int)
         n2 = np.rint((self.s0 - s2) / self.ds).astype(int)
         super(Polargraph, self).goto(n1, n2)
@@ -140,7 +140,7 @@ class Polargraph(Motors):
         s1 = self.s0 + n1*self.ds
         s2 = self.s0 - n2*self.ds
         x = (s2**2 - s1**2)/(2. * self.ell)
-        y = np.sqrt((s1**2 + s2**2)/2. - self.ell**2/4. - x**2) - self.y0
+        y = np.sqrt((s1**2 + s2**2)/2. - self.ell**2/4. - x**2)
         return x, y
 
     @property
@@ -150,4 +150,5 @@ class Polargraph(Motors):
 
     @speed.setter
     def speed(self, value):
-        self.motor_speed = value * self.steps / (self.circumference * self.unit)
+        self.motor_speed = value * (self.steps /
+                                    (self.circumference * self.unit))

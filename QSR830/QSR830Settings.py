@@ -9,8 +9,8 @@ class QSR830Settings(QSettingsWidget):
 
     def __init__(self, parent=None, device=None):
         super(QSR830Settings, self).__init__(parent=parent,
-                                             device=device,
                                              ui=Ui_SR830Settings())
+        self.device = device
 
     def configureUi(self):
         # Choice of source determines activity of widgets
