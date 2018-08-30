@@ -18,8 +18,9 @@ class QPolargraphScan(QObject):
         self.polargraph = polargraph
         self.lockin = lockin
         self.computePath()
-        self.scanning = False
-        self.abort = False
+        self._scanning = False
+        self._abort = False
+        self._shutdown = False
 
     def computePath(self):
         polargraph = self.polargraph.ui
@@ -41,21 +42,33 @@ class QPolargraphScan(QObject):
 
     @pyqtSlot()
     def runScan(self):
-        if self.scanning or self.abort:
-            self.abort = False
+        if self._scanning or self._abort:
+            self._abort = False
             return
-        self.scanning = True
+        self._scanning = True
         polargraph = self.polargraph.device
         npts = len(self.path[:, 0])
         for n in range(npts):
             polargraph.goto(self.path[n, 0], self.path[n, 1])
-            while polargraph.running() and not self.abort:
+            while polargraph.running() and not self._abort:
                 self.newData.emit([polargraph.indexes,
                                    polargraph.position])
-            if self.abort:
+            if self._shutdown:
+                self.finished.emit()
+                return
+            if self._abort:
                 break
         polargraph.goto(self.path[0, 0], self.path[0, 1])
         while polargraph.running():
             self.motion.emit([polargraph.indexes, polargraph.position])
-        self.scanning = False
+        self._scanning = False
         self.finished.emit()
+
+    def scanning(self):
+        return self._scanning
+
+    def abort(self):
+        self._abort = True
+
+    def shutdown(self):
+        self._shutdown = True

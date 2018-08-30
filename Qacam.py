@@ -97,11 +97,13 @@ class Qacam(QMainWindow):
 
     @pyqtSlot()
     def stopScan(self):
-        if self.scanner.scanning:
-            self.scanner.abort = True
+        if self.scanner.scanning():
+            self.scanner.abort()
             self.ui.scan.setText('Stopping')
             self.ui.scan.setEnabled(False)
+            self.statusBar().showMessage('Aborting scan ...')
         else:
+            self.statusBar().showMessage('Scanning ...')
             self.ui.scan.setText('Stop')
 
     @pyqtSlot()
@@ -109,6 +111,7 @@ class Qacam(QMainWindow):
         self.ui.scan.setText('Scan')
         self.ui.scan.setEnabled(True)
         self.ui.controlWidget.setEnabled(True)
+        self.statusBar().showMessage('Scan finished')
 
     @pyqtSlot()
     def plotPath(self):
@@ -133,7 +136,15 @@ class Qacam(QMainWindow):
         self.config.save(self.ui.lockin)
         self.config.save(self.ui.functionGenerator)
         self.config.save(self.ui.polargraph)
+        self.statusBar().showMessage('Configuration saved')
         logger.info('Configuration Saved')
+
+    def closeEvent(self, event):
+        self.statusBar().showMessage('Shutting down ...')
+        self.scanner.shutdown()
+        self.thread.quit()
+        self.thread.wait()
+        event.accept()
 
 
 if __name__ == "__main__":
