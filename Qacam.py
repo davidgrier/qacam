@@ -69,15 +69,22 @@ class Qacam(QMainWindow):
         self.scanner.moveToThread(self.thread)
 
     def connectSignals(self):
-        # self.ui.scan.clicked.connect(self.ui.controlWidget.setEnabled)
+        self.ui.scan.clicked.connect(lambda v:
+                                     self.ui.controlWidget.setEnabled(False))
         self.ui.scan.clicked.connect(self.scanner.runScan)
+        self.ui.scan.clicked.connect(self.stopScan)
         self.scanner.newData.connect(self.plotBelt)
         self.scanner.motion.connect(self.plotBelt)
-        self.ui.actionSaveSettings.triggered.connect(self.saveConfiguration)
+        self.scanner.finished.connect(self.scanFinished)
+
         ui = self.ui.polargraph.ui
+        ui.ell.valueChanged.connect(self.plotPath)
+        ui.y0.valueChanged.connect(self.plotPath)
         ui.height.valueChanged.connect(self.plotPath)
         ui.width.valueChanged.connect(self.plotPath)
         ui.dy.valueChanged.connect(self.plotPath)
+
+        self.ui.actionSaveSettings.triggered.connect(self.saveConfiguration)
 
     def initPlots(self):
         for plot in [self.ui.plot, self.ui.plotAmplitude, self.ui.plotPhase]:
@@ -89,11 +96,19 @@ class Qacam(QMainWindow):
             self.plotBelt()
 
     @pyqtSlot()
-    def saveConfiguration(self):
-        self.config.save(self.ui.lockin)
-        self.config.save(self.ui.functionGenerator)
-        self.config.save(self.ui.polargraph)
-        logger.info('Configuration Saved')
+    def stopScan(self):
+        if self.scanner.scanning:
+            self.scanner.abort = True
+            self.ui.scan.setText('Stopping')
+            self.ui.scan.setEnabled(False)
+        else:
+            self.ui.scan.setText('Stop')
+
+    @pyqtSlot()
+    def scanFinished(self):
+        self.ui.scan.setText('Scan')
+        self.ui.scan.setEnabled(True)
+        self.ui.controlWidget.setEnabled(True)
 
     @pyqtSlot()
     def plotPath(self):
@@ -112,6 +127,13 @@ class Qacam(QMainWindow):
         x = [-ell/2, xp, ell/2]
         y = [0, yp, 0]
         self.beltItem.setData(x, y)
+
+    @pyqtSlot()
+    def saveConfiguration(self):
+        self.config.save(self.ui.lockin)
+        self.config.save(self.ui.functionGenerator)
+        self.config.save(self.ui.polargraph)
+        logger.info('Configuration Saved')
 
 
 if __name__ == "__main__":
