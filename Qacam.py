@@ -38,7 +38,7 @@ class Qacam(QMainWindow):
         pen = pg.mkPen('r', style=Qt.DotLine)
         self.pathItem = pg.PlotDataItem(pen=pen)
         self.ui.plot.addItem(self.pathItem)
-        # graphical representation of existing data
+        # graphical representation of current data
         pen = pg.mkPen('k')
         self.traceItem = pg.ScatterPlotItem(pen=pen)
         self.ui.plot.addItem(self.traceItem)
@@ -111,6 +111,7 @@ class Qacam(QMainWindow):
             self.ui.scan.setEnabled(False)
             self.statusBar().showMessage('Aborting scan ...')
         else:
+            self.traceItem.clear()
             self.statusBar().showMessage('Scanning ...')
             self.ui.scan.setText('Stop')
 
@@ -130,7 +131,7 @@ class Qacam(QMainWindow):
     @pyqtSlot(object)
     def recordScan(self, data=None):
         x, y = data[1]
-        self.traceItem.addPoints(x, y)
+        self.traceItem.addPoints([x], [y])
 
     @pyqtSlot(object)
     def plotBelt(self, data=None):
