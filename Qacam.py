@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import (QMainWindow, QFileDialog)
 from PyQt5.QtCore import (pyqtSlot, Qt, QThread)
 from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
@@ -8,10 +8,11 @@ from QPolargraph import (Polargraph, QPolargraphScan)
 from QSR830 import SR830
 from QDS345 import DS345
 from common.Configure import Configure
+import csv
 
 import logging
 logging.basicConfig()
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('Qacam')
 
 
 class Qacam(QMainWindow):
@@ -80,7 +81,7 @@ class Qacam(QMainWindow):
         self.ui.scan.clicked.connect(lambda v:
                                      self.ui.controlWidget.setEnabled(False))
         self.ui.scan.clicked.connect(self.scanner.runScan)
-        self.ui.scan.clicked.connect(self.stopScan)
+        self.ui.scan.clicked.connect(self.toggleScan)
         self.scanner.newData.connect(self.plotBelt)
         self.scanner.newData.connect(self.recordScan)
         self.scanner.motion.connect(self.plotBelt)
@@ -94,6 +95,7 @@ class Qacam(QMainWindow):
         ui.dy.valueChanged.connect(self.plotPath)
 
         self.ui.actionSaveSettings.triggered.connect(self.saveConfiguration)
+        self.ui.actionSaveRawData.triggered.connect(self.saveRawData)
 
     def initPlots(self):
         for plot in [self.ui.plot, self.ui.plotAmplitude, self.ui.plotPhase]:
@@ -105,13 +107,14 @@ class Qacam(QMainWindow):
             self.plotBelt()
 
     @pyqtSlot()
-    def stopScan(self):
+    def toggleScan(self):
         if self.scanner.scanning():
             self.scanner.abort()
             self.ui.scan.setText('Stopping')
             self.ui.scan.setEnabled(False)
             self.statusBar().showMessage('Aborting scan ...')
         else:
+            self.data = []
             self.traceItem.clear()
             self.statusBar().showMessage('Scanning ...')
             self.ui.scan.setText('Stop')
@@ -130,7 +133,8 @@ class Qacam(QMainWindow):
         self.pathItem.setData(path[:, 0], path[:, 1])
 
     @pyqtSlot(object)
-    def recordScan(self, data=None):
+    def recordScan(self, data):
+        self.data.append([val for tup in data for val in tup])
         x, y = data[1]
         amp, phi = data[2]
         hue = (phi/360. + 1.) % 1.
@@ -161,6 +165,17 @@ class Qacam(QMainWindow):
         self.config.save(self.ui.polargraph)
         self.statusBar().showMessage('Configuration saved')
         logger.info('Configuration Saved')
+
+    @pyqtSlot()
+    def saveRawData(self):
+        name = QFileDialog.getSaveFileName(self, "Save Raw Data",
+                                           "qacam.csv",
+                                           "Raw Data (*.csv)")
+        if name:
+            with open(name[0], "w") as f:
+                writer = csv.writer(f)
+                writer.writerows(self.data)
+        self.statusBar().showMessage('Raw data saved')
 
     def closeEvent(self, event):
         self.statusBar().showMessage('Shutting down ...')
