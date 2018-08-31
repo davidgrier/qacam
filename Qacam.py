@@ -29,13 +29,20 @@ class Qacam(QMainWindow):
         self.show()
 
     def configureUi(self):
+        # hide unnecessary functionality
         self.ui.polargraph.ui.frameBelt.hide()
         self.ui.functionGenerator.ui.offset.setDisabled(True)
         self.ui.lockin.ui.frameAuto.hide()
         self.ui.lockin.ui.frameReference.hide()
+        # graphical representation of planned scan path
         pen = pg.mkPen('r', style=Qt.DotLine)
         self.pathItem = pg.PlotDataItem(pen=pen)
         self.ui.plot.addItem(self.pathItem)
+        # graphical representation of existing data
+        pen = pg.mkPen('k')
+        self.traceItem = pg.ScatterPlotItem(pen=pen)
+        self.ui.plot.addItem(self.traceItem)
+        # graphical representation of polargraph belt
         pen = pg.mkPen('k', thick=3)
         brush = pg.mkBrush('y')
         self.beltItem = pg.PlotDataItem(pen=pen,
@@ -74,6 +81,7 @@ class Qacam(QMainWindow):
         self.ui.scan.clicked.connect(self.scanner.runScan)
         self.ui.scan.clicked.connect(self.stopScan)
         self.scanner.newData.connect(self.plotBelt)
+        self.scanner.newData.connect(self.recordScan)
         self.scanner.motion.connect(self.plotBelt)
         self.scanner.finished.connect(self.scanFinished)
 
@@ -118,6 +126,11 @@ class Qacam(QMainWindow):
         self.scanner.computePath()
         path = self.scanner.path
         self.pathItem.setData(path[:, 0], path[:, 1])
+
+    @pyqtSlot(object)
+    def recordScan(self, data=None):
+        x, y = data[1]
+        self.traceItem.addPoints(x, y)
 
     @pyqtSlot(object)
     def plotBelt(self, data=None):
