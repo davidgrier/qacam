@@ -8,6 +8,8 @@ from QPolargraph import (Polargraph, QPolargraphScan)
 from QSR830 import SR830
 from QDS345 import DS345
 from common.Configure import Configure
+import numpy as np
+from scipy.interpolate import griddata
 import csv
 
 import logging
@@ -35,22 +37,6 @@ class Qacam(QMainWindow):
         self.ui.functionGenerator.ui.offset.setDisabled(True)
         self.ui.lockin.ui.frameAuto.hide()
         self.ui.lockin.ui.frameReference.hide()
-        # graphical representation of planned scan path
-        pen = pg.mkPen('r', style=Qt.DotLine)
-        self.pathItem = pg.PlotDataItem(pen=pen)
-        self.ui.plot.addItem(self.pathItem)
-        # graphical representation of current data
-        pen = pg.mkPen('k')
-        self.traceItem = pg.ScatterPlotItem(pen=pen)
-        self.ui.plot.addItem(self.traceItem)
-        # graphical representation of polargraph belt
-        pen = pg.mkPen('k', thick=3)
-        brush = pg.mkBrush('y')
-        self.beltItem = pg.PlotDataItem(pen=pen,
-                                        symbol='o',
-                                        symbolBrush=brush,
-                                        symbolPen=pen)
-        self.ui.plot.addItem(self.beltItem)
 
     def getDevices(self):
         self.config = Configure(self)
@@ -103,8 +89,29 @@ class Qacam(QMainWindow):
             plot.setAspectLocked(ratio=1)
             plot.invertY(True)
             plot.showGrid(True, True, 0.2)
-            self.plotPath()
-            self.plotBelt()
+        # graphical representation of planned scan path
+        pen = pg.mkPen('r', style=Qt.DotLine)
+        self.pathItem = pg.PlotDataItem(pen=pen)
+        self.ui.plot.addItem(self.pathItem)
+        self.plotPath()
+        # graphical representation of current data
+        pen = pg.mkPen('k')
+        self.traceItem = pg.ScatterPlotItem(pen=pen)
+        self.ui.plot.addItem(self.traceItem)
+        # graphical representation of polargraph belt
+        pen = pg.mkPen('k', thick=3)
+        brush = pg.mkBrush('y')
+        self.beltItem = pg.PlotDataItem(pen=pen,
+                                        symbol='o',
+                                        symbolBrush=brush,
+                                        symbolPen=pen)
+        self.plotBelt()
+        # image representations of amplitude and phase
+        self.ui.plot.addItem(self.beltItem)
+        self.amplitudeItem = pg.ImageItem()
+        self.ui.plotAmplitude.addItem(self.amplitudeItem)
+        self.phaseItem = pg.ImageItem()
+        self.ui.plotPhase.addItem(self.phaseItem)
 
     @pyqtSlot()
     def toggleScan(self):
@@ -124,6 +131,15 @@ class Qacam(QMainWindow):
         self.ui.scan.setText('Scan')
         self.ui.scan.setEnabled(True)
         self.ui.controlWidget.setEnabled(True)
+        d = np.array(self.data)
+        y0 = 0.1
+        grid_x, grid_y = np.mgrid[-0.3:0.3:128j, y0 + 0.04:0.64:128j]
+        self.amplitude = griddata(d[:, 2:4], d[:, 4],
+                                  (grid_x, grid_y), method='cubic')
+        self.amplitudeItem.setImage(self.amplitude)
+        self.phase = griddata(d[:, 2:4], d[:, 5],
+                              (grid_x, grid_y), method='cubic')
+        self.phaseItem.setImage(self.phase)
         self.statusBar().showMessage('Scan finished')
 
     @pyqtSlot()
