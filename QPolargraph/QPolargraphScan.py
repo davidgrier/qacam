@@ -47,12 +47,14 @@ class QPolargraphScan(QObject):
             return
         self._scanning = True
         polargraph = self.polargraph.device
+        lockin = self.lockin.device
         npts = len(self.path[:, 0])
         for n in range(npts):
             polargraph.goto(self.path[n, 0], self.path[n, 1])
             while polargraph.running() and not self._abort:
                 self.newData.emit([polargraph.indexes,
-                                   polargraph.position])
+                                   polargraph.position,
+                                   lockin.data])
             if self._shutdown:
                 self.finished.emit()
                 return

@@ -287,10 +287,14 @@ class SR830(SerialDevice):
         NOTE: can obtain up to 6 readings
         """
         res = self.command('SNAP?%d,%d' %
-                           np.clip(int(a), 1, 11),
-                           np.clip(int(b), 1, 11))
+                           (np.clip(int(a), 1, 11),
+                            np.clip(int(b), 1, 11)))
         va, vb = res.split(',')
         return float(va), float(vb)
+
+    @property
+    def data(self):
+        return self.snap(3, 4)
 
     # Status reporting commands
     def clearStatusRegisters(self):

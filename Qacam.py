@@ -70,7 +70,8 @@ class Qacam(QMainWindow):
             logger.warn('No function generator detected')
 
     def initScanner(self):
-        self.scanner = QPolargraphScan(polargraph=self.ui.polargraph)
+        self.scanner = QPolargraphScan(polargraph=self.ui.polargraph,
+                                       lockin=self.ui.lockin)
         self.thread = QThread()
         self.thread.start()
         self.scanner.moveToThread(self.thread)
@@ -131,7 +132,10 @@ class Qacam(QMainWindow):
     @pyqtSlot(object)
     def recordScan(self, data=None):
         x, y = data[1]
-        self.traceItem.addPoints([x], [y])
+        amp, phi = data[2]
+        hue = (phi/360. + 1.) % 1.
+        brush = pg.mkBrush(color=pg.hsvColor(hue))
+        self.traceItem.addPoints([x], [y], brush=brush)
 
     @pyqtSlot(object)
     def plotBelt(self, data=None):
