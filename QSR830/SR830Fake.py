@@ -24,6 +24,9 @@ class SR830Fake(object):
         self.slope = 0
         self.synchronous = 0
 
+    def busy(self):
+        return False
+
     # Auto functions
     def autoGain(self):
         pass
@@ -71,7 +74,7 @@ class SR830Fake(object):
            11: Channel 2 display
         NOTE: can obtain up to 6 readings
         """
-        return (self.r, self.theta)
+        return (self.r(), self.theta())
 
     @property
     def data(self):
