@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from time import time
+from time import (time, sleep)
 
 import logging
 logging.basicConfig()
@@ -12,20 +12,23 @@ class MotorsFake(object):
     """Control the pair of stepper motors driving a polargraph"""
 
     def __init__(self):
-        self.target = None
         self._indexes = (0, 0)
+        self._target = (0, 0)
         self.motor_speed = 500
-        self.tstop = 0.
+        self._tstart = 0.
+        self._tstop = time()
 
     def goto(self, n1, n2):
         """Move to index (n1, n2)"""
-        self.tstart = time()
-        self.origin = self.indexes
-        self.target = (n1, n2)
-        delta = np.max(np.abs(self.target[0] - self.origin[0]),
-                       np.abs(self.target[1] - self.origin[1]))
-        print('delta', delta)
-        self.tstop = self.tstart + delta/self.motor_speed
+        self._tstart = time()
+        self._origin = self._indexes
+        self._target = (n1, n2)
+        delta = max(abs(self._target[0] - self._origin[0]),
+                    abs(self._target[1] - self._origin[1]))
+        if delta <= 0:
+            self._tstop = -1.
+        else:
+            self._tstop = self._tstart + delta/self.motor_speed
 
     def home(self):
         """Move to home position"""
@@ -37,17 +40,19 @@ class MotorsFake(object):
 
     @property
     def indexes(self):
-        if self.running():
-            t = time()
-            f = (t - self.tstart)/(self.tstop - self.tstart)
-            n1 = self.origin[0] + f * (self.target[0] - self.origin[0])
-            n2 = self.origin[1] + f * (self.target[1] - self.origin[1])
+        sleep(0.05)
+        f = (time() - self._tstart)/(self._tstop - self._tstart)
+        if f >= 1.:
+            self._indexes = self._target
+        else:
+            n1 = self._origin[0] + f * (self._target[0] - self._origin[0])
+            n2 = self._origin[1] + f * (self._target[1] - self._origin[1])
             self._indexes = (n1, n2)
         return self._indexes
 
     def running(self):
         """Returns True if motors are running"""
-        return time() < self.tstop
+        return self.indexes != self._target
 
 
 class PolargraphFake(MotorsFake):
