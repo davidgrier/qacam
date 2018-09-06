@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (QMainWindow, QFileDialog)
 from PyQt5.QtCore import (pyqtSlot, Qt, QThread)
 from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
-from QPolargraph import (Polargraph, QPolargraphScan)
+from QPolargraph import (Polargraph, PolargraphFake, QPolargraphScan)
 from QSR830 import (SR830, SR830Fake)
 from QDS345 import DS345
 from common.Configure import Configure
@@ -44,12 +44,12 @@ class Qacam(QMainWindow):
             self.ui.polargraph.device = Polargraph()
             self.config.restore(self.ui.polargraph)
         except ValueError:
-            logger.warn('No polargraph detected')
+            logger.warn('No polargraph detected ... using fake')
+            self.ui.polargraph.device = PolargraphFake()
         try:
             self.ui.lockin.device = SR830()
         except ValueError:
-            logger.warn('No lockin detected')
-            logger.warn('... using fake')
+            logger.warn('No lockin detected ... using fake')
             self.ui.lockin.device = SR830Fake()
         self.config.restore(self.ui.lockin)
         try:

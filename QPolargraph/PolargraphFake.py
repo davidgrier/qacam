@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from datetime import datetime
+from time import time
 
 import logging
 logging.basicConfig()
@@ -15,17 +15,21 @@ class MotorsFake(object):
         self.target = None
         self._indexes = (0, 0)
         self.motor_speed = 500
+        self.tstop = 0.
 
     def goto(self, n1, n2):
         """Move to index (n1, n2)"""
-        self.start = datetime.now()
-        self.origin = self._indexes
+        self.tstart = time()
+        self.origin = self.indexes
         self.target = (n1, n2)
-        delta = np.max(np.abs(self.target - self.origin)/self.motor_speed)
+        delta = np.max(np.abs(self.target[0] - self.origin[0]),
+                       np.abs(self.target[1] - self.origin[1]))
+        print('delta', delta)
+        self.tstop = self.tstart + delta/self.motor_speed
 
     def home(self):
         """Move to home position"""
-        self.target = (0, 0)
+        self.goto(0, 0)
 
     def release(self):
         """Stop and release motors"""
@@ -33,29 +37,20 @@ class MotorsFake(object):
 
     @property
     def indexes(self):
+        if self.running():
+            t = time()
+            f = (t - self.tstart)/(self.tstop - self.tstart)
+            n1 = self.origin[0] + f * (self.target[0] - self.origin[0])
+            n2 = self.origin[1] + f * (self.target[1] - self.origin[1])
+            self._indexes = (n1, n2)
+        return self._indexes
 
     def running(self):
         """Returns True if motors are running"""
-        return self.indexes != self.target
-
-    @property
-    def motor_speed(self):
-        """Maximum motor speed in steps/s"""
-        try:
-            res = self.command('V')
-            header, speed = res.split(':')
-        except Exception as ex:
-            logger.warn('Could not read maximum speed: {}'.format(ex))
-            speed = 0
-        return float(speed)
-
-    @motor_speed.setter
-    def motor_speed(self, speed):
-        res = self.command('V:%f' % speed)
-        logger.debug('speed: {}'.format(res))
+        return time() < self.tstop
 
 
-class Polargraph(Motors):
+class PolargraphFake(MotorsFake):
     """Control a polargraph
 
     The polargraph consists of two stepper motors with GT2 gears
@@ -76,7 +71,7 @@ class Polargraph(Motors):
                  height=0.6,  # height of scan area [m]
                  dy=0.005):  # vertical displacement between scan lines [m]
 
-        super(Polargraph, self).__init__()
+        super(PolargraphFake, self).__init__()
 
         # Belt drive
         self.unit = float(unit)
@@ -104,7 +99,7 @@ class Polargraph(Motors):
         s2 = np.sqrt((self.ell / 2. + x)**2 + y**2)
         n1 = np.rint((s1 - self.s0) / self.ds).astype(int)
         n2 = np.rint((self.s0 - s2) / self.ds).astype(int)
-        super(Polargraph, self).goto(n1, n2)
+        super(PolargraphFake, self).goto(n1, n2)
 
     @property
     def position(self):
