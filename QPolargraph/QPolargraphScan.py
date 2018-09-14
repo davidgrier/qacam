@@ -67,6 +67,7 @@ class QPolargraphScan(QObject):
         polargraph.goto(self.path[0, 0], self.path[0, 1])
         while polargraph.running():
             self.motion.emit([polargraph.indexes, polargraph.position])
+        polargraph.release()
         self._scanning = False
         self.finished.emit()
 
