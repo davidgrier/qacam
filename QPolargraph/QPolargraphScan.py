@@ -43,8 +43,8 @@ class QPolargraphScan(QObject):
         self.path = np.array(coords)
         self.x0 = -x0
         self.x1 = x0
-        self.y0 = dy
-        self.y1 = dy + height
+        self.y0 = y0
+        self.y1 = y0 + height
 
     @pyqtSlot()
     def runScan(self):

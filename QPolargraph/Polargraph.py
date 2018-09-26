@@ -120,11 +120,16 @@ class Polargraph(Motors):
         self.height = float(height)
         self.dy = float(dy)
 
-        # distance traveled per step [m]
-        self.ds = 1e-3 * self.unit * self.circumference / self.steps
-        # distance (length of belt) from motor to payload at home position [m]
-        self.s0 = np.sqrt((self.ell / 2.)**2 + (self.y0)**2)
+    @property
+    def ds(self):
+        """distance traveled per step [m]"""
+        return 1e-3 * self.unit * self.circumference / self.steps
 
+    @property
+    def s0(self):
+        """distance from motor to payload at home position [m]"""
+        return np.sqrt((self.ell / 2.)**2 + (self.y0)**2)
+        
     def goto(self, x, y):
         """Move payload to position (x,y)"""
         s1 = np.sqrt((self.ell / 2. - x)**2 + y**2)
@@ -142,7 +147,7 @@ class Polargraph(Motors):
         x = (s2**2 - s1**2)/(2. * self.ell)
         ysq = (s1**2 + s2**2)/2. - self.ell**2/4. - x**2
         if ysq < 0:
-            print(ysq)
+            print(n1, n2, self.s0, s1, s2, ysq)
             y = self.y0
         else:
             y = np.sqrt(ysq)

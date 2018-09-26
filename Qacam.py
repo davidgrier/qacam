@@ -202,6 +202,7 @@ class Qacam(QMainWindow):
 
     def closeEvent(self, event):
         self.statusBar().showMessage('Shutting down ...')
+        self.ui.functionGenerator.device.mute = True
         self.scanner.shutdown()
         self.thread.quit()
         self.thread.wait()
