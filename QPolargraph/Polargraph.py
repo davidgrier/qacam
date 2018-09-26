@@ -140,7 +140,12 @@ class Polargraph(Motors):
         s1 = self.s0 + n1*self.ds
         s2 = self.s0 - n2*self.ds
         x = (s2**2 - s1**2)/(2. * self.ell)
-        y = np.sqrt((s1**2 + s2**2)/2. - self.ell**2/4. - x**2)
+        ysq = (s1**2 + s2**2)/2. - self.ell**2/4. - x**2
+        if ysq < 0:
+            print(ysq)
+            y = self.y0
+        else:
+            y = np.sqrt(ysq)
         return x, y
 
     @property

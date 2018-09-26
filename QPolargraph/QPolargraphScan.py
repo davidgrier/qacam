@@ -13,9 +13,11 @@ class QPolargraphScan(QObject):
 
     def __init__(self, parent=None,
                  polargraph=None,
+                 source=None,
                  lockin=None):
         super(QPolargraphScan, self).__init__(parent)
         self.polargraph = polargraph
+        self.source = source
         self.lockin = lockin
         self.computePath()
         self._scanning = False
@@ -52,6 +54,8 @@ class QPolargraphScan(QObject):
         self._scanning = True
         polargraph = self.polargraph.device
         lockin = self.lockin.device
+        source = self.source.device
+        # source.mute = False
         npts = len(self.path[:, 0])
         for n in range(npts):
             polargraph.goto(self.path[n, 0], self.path[n, 1])
@@ -64,6 +68,7 @@ class QPolargraphScan(QObject):
                 return
             if self._abort:
                 break
+        # source.mute = True
         polargraph.goto(self.path[0, 0], self.path[0, 1])
         while polargraph.running():
             self.motion.emit([polargraph.indexes, polargraph.position])

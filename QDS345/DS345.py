@@ -39,15 +39,15 @@ class DS345(SerialDevice):
 
     @mute.setter
     def mute(self, state):
+        print('mute: {}'.format(state))
         if state:
             if not self._mute:
                 self._amplitude = self.amplitude
                 self.amplitude = 0.
                 self._mute = True
-        else:
-            if self._mute:
-                self.amplitude = self._amplitude
-                self._mute = False
+        elif self._mute:
+            self.amplitude = self._amplitude
+            self._mute = False
                 
     # Function output adjustable properties
     @property

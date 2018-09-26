@@ -54,12 +54,14 @@ class Qacam(QMainWindow):
         self.config.restore(self.ui.lockin)
         try:
             self.ui.functionGenerator.device = DS345()
+            # self.ui.functionGenerator.device.mute = True
             self.config.restore(self.ui.functionGenerator)
         except ValueError:
             logger.warn('No function generator detected')
 
     def initScanner(self):
         self.scanner = QPolargraphScan(polargraph=self.ui.polargraph,
+                                       source=self.ui.functionGenerator,
                                        lockin=self.ui.lockin)
         self.thread = QThread()
         self.thread.start()
