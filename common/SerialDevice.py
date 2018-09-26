@@ -42,6 +42,7 @@ class SerialDevice(object):
             if self.manufacturer not in port.manufacturer:
                 continue
             try:
+                logger.info('Trying {}'.format(port.device))
                 self.ser = serial.Serial(port.device,
                                          baudrate=self.baudrate,
                                          bytesize=self.bytesize,

@@ -3,12 +3,17 @@
 from common.SerialDevice import SerialDevice
 import numpy as np
 import re
+import serial
+from parse import parse
 
 
 class DS345(SerialDevice):
 
     def __init__(self):
-        super(DS345, self).__init__()
+        super(DS345, self).__init__(baudrate=9600,
+                                    bytesize=serial.EIGHTBITS,
+                                    parity=serial.PARITY_NONE,
+                                    stopbits=serial.STOPBITS_TWO)
 
     def command(self, cmd):
         """Send cmd to function generator and return response"""
@@ -30,7 +35,7 @@ class DS345(SerialDevice):
     @property
     def amplitude(self):
         """Output amplitude [Vpp]"""
-        return float(self.command('AMPL?'))
+        return float(parse('{}VP', self.command('AMPL?'))[0])
 
     @amplitude.setter
     def amplitude(self, value):
@@ -73,7 +78,7 @@ class DS345(SerialDevice):
            4: noise
            5: arbitrary
         """
-        return self.command('FUNC?')
+        return int(self.command('FUNC?'))
 
     @waveform.setter
     def waveform(self, value):
