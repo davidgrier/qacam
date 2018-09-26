@@ -14,6 +14,7 @@ class DS345(SerialDevice):
                                     bytesize=serial.EIGHTBITS,
                                     parity=serial.PARITY_NONE,
                                     stopbits=serial.STOPBITS_TWO)
+        self._mute = False
 
     def command(self, cmd):
         """Send cmd to function generator and return response"""
@@ -31,15 +32,38 @@ class DS345(SerialDevice):
         """Read identification string from function generator"""
         return self.command('*IDN?')
 
+    @property
+    def mute(self):
+        """Output muted"""
+        return self._mute
+
+    @mute.setter
+    def mute(self, state):
+        if state:
+            if not self._mute:
+                self._amplitude = self.amplitude
+                self.amplitude = 0.
+                self._mute = True
+        else:
+            if self._mute:
+                self.amplitude = self._amplitude
+                self._mute = False
+                
     # Function output adjustable properties
     @property
     def amplitude(self):
         """Output amplitude [Vpp]"""
-        return float(parse('{}VP', self.command('AMPL?'))[0])
+        if self.mute:
+            return self._amplitude
+        else:
+            return float(parse('{}VP', self.command('AMPL?'))[0])
 
     @amplitude.setter
     def amplitude(self, value):
-        self.write('AMPL %.2fVP' % float(value))
+        if self.mute:
+            self._amplitude = float(value)
+        else:
+            self.write('AMPL %.2fVP' % float(value))
 
     @property
     def frequency(self):
