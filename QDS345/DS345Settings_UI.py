@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DS345Settings(object):
     def setupUi(self, DS345Settings):
         DS345Settings.setObjectName("DS345Settings")
-        DS345Settings.resize(254, 105)
+        DS345Settings.resize(254, 118)
         self.formLayout = QtWidgets.QFormLayout(DS345Settings)
         self.formLayout.setContentsMargins(0, 2, 0, 2)
         self.formLayout.setSpacing(2)
@@ -40,7 +40,7 @@ class Ui_DS345Settings(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.amplitude.sizePolicy().hasHeightForWidth())
         self.amplitude.setSizePolicy(sizePolicy)
-        self.amplitude.setMinimum(0.01)
+        self.amplitude.setMinimum(0.0)
         self.amplitude.setMaximum(5.0)
         self.amplitude.setSingleStep(0.1)
         self.amplitude.setProperty("value", 1.0)

@@ -114,7 +114,7 @@ class DS345(SerialDevice):
 
     @invert.setter
     def invert(self, value):
-        self.write('INVT %d', np.clip(int(value), 0, 1))
+        self.write('INVT %d' % np.clip(int(value), 0, 1))
 
     def setECL(self):
         """Set ECL levels: 1Vpp, -1.3V offset"""

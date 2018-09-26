@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QMessageBox
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class Configure(object):
@@ -63,6 +64,7 @@ class Configure(object):
         """Restore object's configuration from json file"""
         try:
             filename = self.configname(object)
+            logger.info('Configuring {}'.format(filename))
             configuration = json.load(io.open(filename))
             object.settings = configuration
         except IOError as ex:

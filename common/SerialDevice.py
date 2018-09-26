@@ -83,7 +83,8 @@ class SerialDevice(object):
         self.ser.flush()
 
     def readln(self):
-        str = self.ser.read_until(terminator=self.eol).decode().strip()
+        str = self.ser.read_until(terminator=self.eol)
+        str = str.decode().strip()
         logger.debug('read: {}'.format(str))
         return str
 

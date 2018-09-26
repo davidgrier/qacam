@@ -8,7 +8,7 @@ import inspect
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.INFO)
 
 
 class QSettingsWidget(QWidget):
@@ -33,7 +33,6 @@ class QSettingsWidget(QWidget):
             return
         if hasattr(self, 'device'):
             self.disconnectSignals()
-            logger.info('device disconnected')
         self._device = device
         self.getProperties()
         self.configureUi()
@@ -64,7 +63,7 @@ class QSettingsWidget(QWidget):
     def settings(self, values):
         for name in values:
             self.setDeviceProperty(name, values[name])
-        self.updateUi
+        self.updateUi()
 
     @property
     def properties(self):

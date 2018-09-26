@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>254</width>
-    <height>105</height>
+    <height>118</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -92,7 +92,7 @@
       <string> Vpp</string>
      </property>
      <property name="minimum">
-      <double>0.010000000000000</double>
+      <double>0.000000000000000</double>
      </property>
      <property name="maximum">
       <double>5.000000000000000</double>
