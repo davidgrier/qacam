@@ -8,7 +8,7 @@ import inspect
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.INFO)
 
 
 class QSettingsWidget(QWidget):
@@ -43,9 +43,10 @@ class QSettingsWidget(QWidget):
         logger.info('device connected')
 
     def setDeviceProperty(self, name, value):
-        """Set device property and wait for operation to compute"""
+        """Set device property and wait for operation to complete"""
         if hasattr(self.device, name):
             setattr(self.device, name, value)
+            logger.info('Setting {}: {}'.format(name, value))
             while self.device.busy():
                 if self.device.error:
                     logger.warn('device error')
