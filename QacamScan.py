@@ -4,7 +4,7 @@ from PyQt5.QtCore import (QObject, pyqtSignal, pyqtSlot)
 import numpy as np
 
 
-class QPolargraphScan(QObject):
+class QacamScan(QObject):
     """Scan object ready for threading"""
 
     newData = pyqtSignal(object)
@@ -15,7 +15,7 @@ class QPolargraphScan(QObject):
                  polargraph=None,
                  source=None,
                  lockin=None):
-        super(QPolargraphScan, self).__init__(parent)
+        super(QacamScan, self).__init__(parent)
         self.polargraph = polargraph
         self.source = source
         self.lockin = lockin
@@ -55,7 +55,7 @@ class QPolargraphScan(QObject):
         polargraph = self.polargraph.device
         lockin = self.lockin.device
         source = self.source.device
-        # source.mute = False
+        source.mute = False
         npts = len(self.path[:, 0])
         for n in range(npts):
             polargraph.goto(self.path[n, 0], self.path[n, 1])
@@ -68,7 +68,7 @@ class QPolargraphScan(QObject):
                 return
             if self._abort:
                 break
-        # source.mute = True
+        source.mute = True
         polargraph.goto(self.path[0, 0], self.path[0, 1])
         while polargraph.running():
             self.motion.emit([polargraph.indexes, polargraph.position])

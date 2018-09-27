@@ -4,9 +4,10 @@ from PyQt5.QtWidgets import (QMainWindow, QFileDialog)
 from PyQt5.QtCore import (pyqtSlot, Qt, QThread)
 from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
-from QPolargraph import (Polargraph, PolargraphFake, QPolargraphScan)
+from QPolargraph import (Polargraph, PolargraphFake)
 from QSR830 import (SR830, SR830Fake)
 from QDS345 import DS345
+from QacamScan import QacamScan
 from common.Configure import Configure
 import numpy as np
 from scipy.interpolate import griddata
@@ -54,15 +55,15 @@ class Qacam(QMainWindow):
         self.config.restore(self.ui.lockin)
         try:
             self.ui.functionGenerator.device = DS345()
-            # self.ui.functionGenerator.device.mute = True
+            self.ui.functionGenerator.device.mute = True
             self.config.restore(self.ui.functionGenerator)
         except ValueError:
             logger.warn('No function generator detected')
 
     def initScanner(self):
-        self.scanner = QPolargraphScan(polargraph=self.ui.polargraph,
-                                       source=self.ui.functionGenerator,
-                                       lockin=self.ui.lockin)
+        self.scanner = QacamScan(polargraph=self.ui.polargraph,
+                                 source=self.ui.functionGenerator,
+                                 lockin=self.ui.lockin)
         self.thread = QThread()
         self.thread.start()
         self.scanner.moveToThread(self.thread)
