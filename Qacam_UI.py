@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Qacam_UI.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,6 +12,9 @@ class Ui_Qacam(object):
     def setupUi(self, Qacam):
         Qacam.setObjectName("Qacam")
         Qacam.resize(868, 620)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("icons/256x256.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Qacam.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(Qacam)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -133,7 +136,7 @@ class Ui_Qacam(object):
         self.horizontalLayout_2.addWidget(self.controlWidget)
         Qacam.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Qacam)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 868, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 868, 22))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
