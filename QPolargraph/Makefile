@@ -1,8 +1,14 @@
-UIFILE = Polargraph_UI
-PYFILE = QPolargraphSettings.py
+UIFILE := $(wildcard *.ui)
+PYFILE := $(UIFILE:.ui=.py)
+PYTHON = python
+PYUIC = pyuic5
 
-all:
-	pyuic5 $(UIFILE).ui -x -o $(UIFILE).py
+.PHONY: all test
 
-test:
-	python $(PYFILE)
+all: $(PYFILE)
+
+test: $(PYFILE)
+	$(PYTHON) $(PYFILE)
+
+%.py: %.ui
+	$(PYUIC) $< -x -o $@

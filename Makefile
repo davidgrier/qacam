@@ -1,8 +1,20 @@
-UIFILE = Qacam_UI
-PYFILE = Qacam
+RUNFILE := Qacam.py
+UIFILE := $(wildcard *.ui)
+PYFILE := $(UIFILE:.ui=.py)
+SUBDIRS := $(wildcard Q*/.)
+MAKE = gmake
+PYTHON = python
+PYUIC = pyuic5
 
-all:
-	pyuic5 $(UIFILE).ui -x -o $(UIFILE).py
+.PHONY: all test $(SUBDIRS)
 
-test:
-	python $(PYFILE).py
+all: $(PYFILE) $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+test: $(PYFILE)
+	$(PYTHON) $(RUNFILE)
+
+%.py: %.ui
+	$(PYUIC) $< -x -o $@
