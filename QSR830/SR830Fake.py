@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
 from numpy.random import (normal, uniform)
 
 
@@ -82,7 +81,7 @@ class SR830Fake(object):
 
     # Status reporting commands
     def clearStatusRegisters(self):
-        """Clear status regiesters except status enable registers"""
+        """Clear status registers except status enable registers"""
         pass
 
     def status(self):

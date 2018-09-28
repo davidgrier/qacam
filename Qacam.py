@@ -6,7 +6,7 @@ from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
 from QPolargraph import (Polargraph, PolargraphFake)
 from QSR830 import (SR830, SR830Fake)
-from QDS345 import DS345
+from QDS345 import (DS345, DS345Fake)
 from QacamScan import QacamScan
 from common.Configure import Configure
 import numpy as np
@@ -58,7 +58,8 @@ class Qacam(QMainWindow):
             self.ui.functionGenerator.device.mute = True
             self.config.restore(self.ui.functionGenerator)
         except ValueError:
-            logger.warn('No function generator detected')
+            logger.warn('No function generator detected ... using fake')
+            self.ui.functionGenerator.device = DS345Fake()
 
     def initScanner(self):
         self.scanner = QacamScan(polargraph=self.ui.polargraph,
