@@ -21,8 +21,7 @@ class QacamScan(QObject):
         self.lockin = lockin
         self.computePath()
         self._scanning = False
-        self._abort = False
-        self._shutdown = False
+        self._reset = False
 
     def computePath(self):
         polargraph = self.polargraph.ui
@@ -48,8 +47,8 @@ class QacamScan(QObject):
 
     @pyqtSlot()
     def runScan(self):
-        if self._scanning or self._abort:
-            self._abort = False
+        if self._scanning or self._reset:
+            self._reset = False
             return
         self._scanning = True
         polargraph = self.polargraph.device
@@ -59,14 +58,11 @@ class QacamScan(QObject):
         npts = len(self.path[:, 0])
         for n in range(npts):
             polargraph.goto(self.path[n, 0], self.path[n, 1])
-            while polargraph.running() and not self._abort:
+            while polargraph.running() and not self._reset:
                 self.newData.emit([polargraph.indexes,
                                    polargraph.position,
                                    lockin.data])
-            if self._shutdown:
-                self.finished.emit()
-                return
-            if self._abort:
+            if self._reset:
                 break
         source.mute = True
         polargraph.goto(self.path[0, 0], self.path[0, 1])
@@ -79,8 +75,5 @@ class QacamScan(QObject):
     def scanning(self):
         return self._scanning
 
-    def abort(self):
-        self._abort = True
-
-    def shutdown(self):
-        self._shutdown = True
+    def reset(self):
+        self._reset = True

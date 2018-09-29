@@ -122,7 +122,7 @@ class Qacam(QMainWindow):
     @pyqtSlot()
     def toggleScan(self):
         if self.scanner.scanning():
-            self.scanner.abort()
+            self.scanner.reset()
             self.ui.scan.setText('Stopping')
             self.ui.scan.setEnabled(False)
             self.statusBar().showMessage('Aborting scan ...')
@@ -205,7 +205,7 @@ class Qacam(QMainWindow):
     def closeEvent(self, event):
         self.statusBar().showMessage('Shutting down ...')
         self.ui.functionGenerator.device.mute = True
-        self.scanner.shutdown()
+        self.scanner.reset()
         self.thread.quit()
         self.thread.wait()
         event.accept()
