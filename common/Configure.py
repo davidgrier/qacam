@@ -18,6 +18,19 @@ class Configure(object):
 
     The configuration object also includes utility functions for
     standard timestamps and standard file names
+
+    Methods
+    -------
+    timestamp() : str
+        Returns a string representation of the current time.
+    filename([prefix], [suffix]) : str
+        Returns a string intended for use as a filename.
+    configname(object) : str
+        Returns the filename for a configuration file.
+    save(object) :
+        Save the configuration of a specified object.
+    restore(object) :
+        Read configuration and set properties of object.
     """
 
     def __init__(self, parent):
@@ -33,19 +46,50 @@ class Configure(object):
             os.makedirs(self.configdir)
 
     def timestamp(self):
+        '''Returns string representing the current date and time'''
         return datetime.now().strftime('_%Y%b%d_%H%M%S')
 
-    def filename(self, prefix='pyfab', suffix=None):
+    def filename(self, prefix='qacam', suffix=None):
+        '''Returns a file name, including timestamp
+
+        Arguments
+        ---------
+        prefix : str, optional
+            String prefix for the filename.
+            Default: qacam
+        suffix : str, optional
+            String suffix to append to filename.
+            Default: None
+        '''
         return os.path.join(self.datadir,
                             prefix + self.timestamp() + suffix)
 
     def configname(self, object):
-        """Configuration file is named for the class of the object."""
+        '''Returns name of configuration file based on class of objects
+
+        Parameters
+        ----------
+        object : object
+            Configuration file is named based on class name of objects
+
+        Returns
+        -------
+        configname : str
+            File name for configuration file
+
+        '''
         classname = object.__class__.__name__
         return os.path.join(self.configdir, classname + '.json')
 
     def save(self, object):
-        """Save configuration of object as json file"""
+        '''Save configuration of object as json file
+
+        Parameters
+        ----------
+        object : object
+            Object must have settings property, which provides
+            a dictionary of parameters to be saved.
+        '''
         settings = object.settings
         if len(settings) == 0:
             return
@@ -61,7 +105,14 @@ class Configure(object):
                 configfile.write(unicode(configuration))
 
     def restore(self, object):
-        """Restore object's configuration from json file"""
+        '''Restore object configuration from json file
+
+        Parameters
+        ----------
+        object : object
+            Reads configuration for object from a configuration file
+            based on the object class name
+        '''
         try:
             filename = self.configname(object)
             logger.info('Configuring {}'.format(filename))

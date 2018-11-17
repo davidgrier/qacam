@@ -192,14 +192,15 @@ class Qacam(QMainWindow):
         logger.info('Configuration Saved')
 
     @pyqtSlot()
-    def saveRawData(self):
-        name = QFileDialog.getSaveFileName(self, "Save Raw Data",
-                                           "qacam.csv",
-                                           "Raw Data (*.csv)")
-        if name:
-            with open(name[0], "w") as f:
-                writer = csv.writer(f)
-                writer.writerows(self.data)
+    def saveRawData(self, name=None):
+        if name is None:
+            name = QFileDialog.getSaveFileName(self,
+                                               'Save Raw Data',
+                                               'qacam.csv',
+                                               'Raw Data (*.csv)')
+        with open(name, 'w') as f:
+            writer = csv.writer(f)
+            writer.writerows(self.data)
         self.statusBar().showMessage('Raw data saved')
 
     def closeEvent(self, event):
