@@ -2,13 +2,17 @@
 
 from PyQt5.QtWidgets import (QMainWindow, QFileDialog)
 from PyQt5.QtCore import (pyqtSlot, Qt, QThread)
-from Qacam_UI import Ui_Qacam
+from qacam.Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
-from QPolargraph import (Polargraph, PolargraphFake)
-from QSR830 import (SR830, SR830Fake)
-from QDS345 import (DS345, DS345Fake)
+from qacam.QPolargraph.Polargraph import Polargraph
+from qacam.QSR830.SR830 import SR830
+from qacam.QDS345.DS345 import DS345
+from qacam.QPolargraph.PolargraphFake import PolargraphFake
+from qacam.QSR830.SR830Fake import SR830Fake
+from qacam.QDS345.DS345Fake import DS345Fake
+
 from QacamScan import QacamScan
-from common.Configure import Configure
+from qacam.common.Configure import Configure
 import numpy as np
 from scipy.interpolate import griddata
 import csv
@@ -42,20 +46,20 @@ class Qacam(QMainWindow):
     def getDevices(self):
         self.config = Configure(self)
         try:
-            self.ui.polargraph.device = Polargraph()
+            self.ui.polargraph.device=Polargraph()
             self.config.restore(self.ui.polargraph)
         except ValueError:
             logger.warn('No polargraph detected ... using fake')
-            self.ui.polargraph.device = PolargraphFake()
+            self.ui.polargraph.device=PolargraphFake()
         try:
-            self.ui.lockin.device = SR830()
+            self.ui.lockin.device=SR830()
         except ValueError:
             logger.warn('No lockin detected ... using fake')
-            self.ui.lockin.device = SR830Fake()
+            self.ui.lockin.device=SR830Fake()
         self.config.restore(self.ui.lockin)
         try:
-            self.ui.functionGenerator.device = DS345()
-            self.ui.functionGenerator.device.mute = True
+            self.ui.functionGenerator.device=DS345()
+            self.ui.functionGenerator.device.mute=True
             self.config.restore(self.ui.functionGenerator)
         except ValueError:
             logger.warn('No function generator detected ... using fake')

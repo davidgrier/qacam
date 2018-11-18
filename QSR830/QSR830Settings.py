@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from common.QSettingsWidget import QSettingsWidget
+from qacam.common.QSettingsWidget import QSettingsWidget
 from SR830Settings_UI import Ui_SR830Settings
 
 

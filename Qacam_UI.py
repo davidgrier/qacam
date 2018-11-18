@@ -190,9 +190,9 @@ class Ui_Qacam(object):
         self.actionSaveRawData.setStatusTip(_translate("Qacam", "Save Raw Data"))
         self.actionSaveRawData.setShortcut(_translate("Qacam", "Meta+D"))
 
-from QDS345 import QDS345Settings
-from QPolargraph import QPolargraphSettings
-from QSR830 import QSR830Settings
+from QDS345.QDS345Settings import QDS345Settings
+from QPolargraph.QPolargraphSettings import QPolargraphSettings
+from QSR830.QSR830Settings import QSR830Settings
 from pyqtgraph import PlotWidget
 
 if __name__ == "__main__":

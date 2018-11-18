@@ -342,27 +342,27 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QSR830Settings</class>
-   <extends>QWidget</extends>
-   <header>QSR830</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QPolargraphSettings</class>
-   <extends>QWidget</extends>
-   <header>QPolargraph</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>PlotWidget</class>
    <extends>QWidget</extends>
    <header>pyqtgraph</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QPolargraphSettings</class>
+   <extends>QWidget</extends>
+   <header>QPolargraph.QPolargraphSettings</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QSR830Settings</class>
+   <extends>QWidget</extends>
+   <header>QSR830.QSR830Settings</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QDS345Settings</class>
    <extends>QWidget</extends>
-   <header>QDS345</header>
+   <header>QDS345.QDS345Settings</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
