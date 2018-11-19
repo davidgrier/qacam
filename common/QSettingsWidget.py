@@ -41,6 +41,40 @@ class QSettingsWidget(QWidget):
         self.setEnabled(True)
         logger.info('device connected')
 
+    def set(self, name, value):
+        '''Set parameter on both device and UI
+
+        Parameters
+        ----------
+        name : string
+            Name of property
+        value : scalar
+            Value of property
+        '''
+        if name in self.properties:
+            self.setDeviceProperty(name, value)
+            self.setUiProperty(name, value)
+        else:
+            logger.warning('unknown property: {}'.format(name))
+
+    def get(self, name):
+        '''Return value from device (and UI)
+
+        Parameters
+        ----------
+        name : string
+            Name of property
+
+        Returns
+        -------
+        value : scalar
+            Value of property
+        '''
+        if name in self.properties:
+            return getattr(self.device, name)
+        else:
+            logger.warning('unknown property: {}'.format(name))
+
     def setDeviceProperty(self, name, value):
         """Set device property and wait for operation to complete"""
         if hasattr(self.device, name):
@@ -49,6 +83,19 @@ class QSettingsWidget(QWidget):
             while self.device.busy():
                 if self.device.error:
                     logger.warn('device error')
+
+    def setUiProperty(self, name, value):
+        wid = getattr(self.ui, name)
+        if isinstance(wid, QDoubleSpinBox):
+            wid.setValue(value)
+        elif isinstance(wid, QSpinBox):
+            wid.setValue(value)
+        elif isinstance(wid, QComboBox):
+            wid.setCurrentIndex(value)
+        elif isinstance(wid, QPushButton):
+            pass
+        else:
+            logger.warn('Unknown property: {}: {}'.format(name, type(wid)))
 
     @property
     def settings(self):
@@ -75,6 +122,7 @@ class QSettingsWidget(QWidget):
         uprops = [name for name, _ in inspect.getmembers(self.ui)]
         props = [name for name in dprops if name in uprops]
         self._properties = [name for name in props if '_' not in name]
+        print('XXXX', self._properties)
         logger.debug(self._properties)
 
     def configureUi(self):
@@ -84,18 +132,8 @@ class QSettingsWidget(QWidget):
     def updateUi(self):
         """Update widgets with current values from device"""
         for prop in self.properties:
-            wid = getattr(self.ui, prop)
             val = getattr(self.device, prop)
-            if isinstance(wid, QDoubleSpinBox):
-                wid.setValue(val)
-            elif isinstance(wid, QSpinBox):
-                wid.setValue(val)
-            elif isinstance(wid, QComboBox):
-                wid.setCurrentIndex(val)
-            elif isinstance(wid, QPushButton):
-                continue
-            else:
-                logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))
+            self.setUiProperty(prop, val)
 
     @pyqtSlot(int)
     @pyqtSlot(float)
