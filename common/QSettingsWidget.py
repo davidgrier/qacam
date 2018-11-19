@@ -122,7 +122,6 @@ class QSettingsWidget(QWidget):
         uprops = [name for name, _ in inspect.getmembers(self.ui)]
         props = [name for name in dprops if name in uprops]
         self._properties = [name for name in props if '_' not in name]
-        print('XXXX', self._properties)
         logger.debug(self._properties)
 
     def configureUi(self):
