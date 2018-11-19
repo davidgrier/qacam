@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from common.SerialDevice import SerialDevice
+from qacam.common.SerialDevice import SerialDevice
 import numpy as np
 import re
 import serial

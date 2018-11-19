@@ -46,20 +46,20 @@ class Qacam(QMainWindow):
     def getDevices(self):
         self.config = Configure(self)
         try:
-            self.ui.polargraph.device=Polargraph()
+            self.ui.polargraph.device = Polargraph()
             self.config.restore(self.ui.polargraph)
         except ValueError:
             logger.warn('No polargraph detected ... using fake')
-            self.ui.polargraph.device=PolargraphFake()
+            self.ui.polargraph.device = PolargraphFake()
         try:
-            self.ui.lockin.device=SR830()
+            self.ui.lockin.device = SR830()
         except ValueError:
             logger.warn('No lockin detected ... using fake')
-            self.ui.lockin.device=SR830Fake()
+            self.ui.lockin.device = SR830Fake()
         self.config.restore(self.ui.lockin)
         try:
-            self.ui.functionGenerator.device=DS345()
-            self.ui.functionGenerator.device.mute=True
+            self.ui.functionGenerator.device = DS345()
+            self.ui.functionGenerator.device.mute = True
             self.config.restore(self.ui.functionGenerator)
         except ValueError:
             logger.warn('No function generator detected ... using fake')
