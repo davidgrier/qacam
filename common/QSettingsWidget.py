@@ -12,9 +12,52 @@ logger.setLevel(logging.INFO)
 
 
 class QSettingsWidget(QWidget):
-    """A glue class that connects a GUI with a device"""
+    '''A glue class that connects a device with a GUI
+
+    An object of this class associates properties of a device
+    such as a lockin amplifier with widgets in a GUI that are
+    intended to control those properties.  Getting and setting
+    the properties with this class ensures that both the device
+    and the GUI are up to date and synchronized.
+
+    ...
+
+    Parameters
+    ----------
+    device : object
+        Properties of this device will be selected
+    ui : object
+        UI object created with QtDesigner
+    parent : QWidget
+        Parent widget in PyQt hierarchy
+
+    Attributes
+    ----------
+    properties : list
+        List of properties that are managed by the object
+    settings : dict
+        Dictionary of properties and their settings
+
+    Methods
+    -------
+    set(property, value)
+        Set the named property to the specified value.
+        This updates both the UI and the device.
+    get(property) : int|float|bool
+        Get the named property
+    '''
 
     def __init__(self, parent=None, device=None, ui=None):
+        '''
+        Parameters
+        ----------
+        parent : QWidget
+            Parent widget in PyQt hierarchy
+        device : object
+            Abstraction of device to be controlled
+        ui : object
+            GUI representing device created by QtDesigner
+        '''
         super(QSettingsWidget, self).__init__(parent)
         self.ui = ui
         self.ui.setupUi(self)
@@ -23,6 +66,7 @@ class QSettingsWidget(QWidget):
 
     @property
     def device(self):
+        '''Object representation of device to be controlled'''
         return self._device
 
     @device.setter
@@ -46,7 +90,7 @@ class QSettingsWidget(QWidget):
 
         Parameters
         ----------
-        name : string
+        name : str
             Name of property
         value : scalar
             Value of property
@@ -62,7 +106,7 @@ class QSettingsWidget(QWidget):
 
         Parameters
         ----------
-        name : string
+        name : str
             Name of property
 
         Returns
@@ -76,7 +120,15 @@ class QSettingsWidget(QWidget):
             logger.warning('unknown property: {}'.format(name))
 
     def setDeviceProperty(self, name, value):
-        """Set device property and wait for operation to complete"""
+        '''Set device property and wait for operation to complete
+
+        Parameters
+        ----------
+        name : str
+            Name of property to set
+        value : scalar
+            Value to set
+        '''
         if hasattr(self.device, name):
             setattr(self.device, name, value)
             logger.info('Setting {}: {}'.format(name, value))
@@ -85,6 +137,15 @@ class QSettingsWidget(QWidget):
                     logger.warn('device error')
 
     def setUiProperty(self, name, value):
+        '''Set UI property
+
+        Parameters
+        ----------
+        name : str
+            Name of property to set
+        value : scalar
+            Value to set
+        '''
         wid = getattr(self.ui, name)
         if isinstance(wid, QDoubleSpinBox):
             wid.setValue(value)
@@ -99,6 +160,7 @@ class QSettingsWidget(QWidget):
 
     @property
     def settings(self):
+        '''Dictionary of properties and their values'''
         values = dict()
         for prop in self.properties:
             value = getattr(self.device, prop)
@@ -114,10 +176,15 @@ class QSettingsWidget(QWidget):
 
     @property
     def properties(self):
+        '''List of properties managed by this object'''
         return self._properties
 
     def getProperties(self):
-        """valid properties appear in both the device and the ui"""
+        '''Create list of properties
+
+        Valid properties appear in both the device and the ui.
+        Do not include private properties denoted with an underscore.
+        '''
         dprops = [name for name, _ in inspect.getmembers(self.device)]
         uprops = [name for name, _ in inspect.getmembers(self.ui)]
         props = [name for name in dprops if name in uprops]
@@ -129,7 +196,7 @@ class QSettingsWidget(QWidget):
 
     @pyqtSlot()
     def updateUi(self):
-        """Update widgets with current values from device"""
+        '''Update widgets with current values from device'''
         for prop in self.properties:
             val = getattr(self.device, prop)
             self.setUiProperty(prop, val)
@@ -137,6 +204,12 @@ class QSettingsWidget(QWidget):
     @pyqtSlot(int)
     @pyqtSlot(float)
     def updateDevice(self, value):
+        '''Update device property when UI property is updated
+
+        Connecting this slot to the appropriate UI signal ensures
+        that device properties are updated when the user interacts
+        with the UI.
+        '''
         name = str(self.sender().objectName())
         self.setDeviceProperty(name, value)
 

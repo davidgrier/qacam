@@ -198,14 +198,18 @@ class Qacam(QMainWindow):
     @pyqtSlot()
     def saveRawData(self, name=None):
         if name is None:
-            name = QFileDialog.getSaveFileName(self,
-                                               'Save Raw Data',
-                                               'qacam.csv',
-                                               'Raw Data (*.csv)')
-        with open(name, 'w') as f:
-            writer = csv.writer(f)
-            writer.writerows(self.data)
-        self.statusBar().showMessage('Raw data saved')
+            default = self.config.filename(suffix='.csv')
+            name, _ = QFileDialog.getSaveFileName(self,
+                                                  'Save Raw Data',
+                                                  default,
+                                                  'Raw Data (*.csv)')
+        try:
+            with open(name, 'w') as f:
+                writer = csv.writer(f)
+                writer.writerows(self.data)
+            self.statusBar().showMessage('Raw data saved to {}'.format(name))
+        except AttributeError:
+            self.statusBar().showMessage('Save aborted')
 
     def closeEvent(self, event):
         self.statusBar().showMessage('Shutting down ...')
