@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from common.QSettingsWidget import QSettingsWidget
+from qqcqm.common.QSettingsWidget import QSettingsWidget
 from DS345Settings_UI import Ui_DS345Settings
 
 
