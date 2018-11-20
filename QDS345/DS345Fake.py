@@ -2,6 +2,11 @@
 
 
 class DS345Fake(object):
+    '''Abstraction for a placeholder function generator
+
+    This model is useful when no real function generator is
+    attached to the instrument.
+    '''
 
     def __init__(self):
         self.identification = 'Fake DS345 Function Generator'

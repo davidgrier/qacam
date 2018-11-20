@@ -5,8 +5,9 @@ from DS345Settings_UI import Ui_DS345Settings
 
 
 class QDS345Settings(QSettingsWidget):
-    """Configuration for a Stanford Research Systems
-    DS345 function generator"""
+    '''Configuration for a Stanford Research Systems
+    DS345 Function Generator
+    '''
 
     def __init__(self, parent=None, device=None):
         super(QDS345Settings, self).__init__(parent=parent,

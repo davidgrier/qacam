@@ -8,6 +8,35 @@ from parse import parse
 
 
 class DS345(SerialDevice):
+    '''Abstraction of a Stanford Research DS345 Function Generator
+
+    Attributes
+    ----------
+    amplitude : float
+       Output amplitude [Vpp]
+    frequency : float
+       Output frequency [Hz]
+    offset : float
+       Offset voltage [V]
+    phase : float
+       Output phase relative to reference [degrees]
+    waveform : 0 .. 5
+       Index of output waveform selection
+    invert : bool
+       If True, invert output signal
+    mute : bool
+       If True, set amplitude to 0 V.
+       Else, set amplitude to last value.
+    identification : str
+       Identification string returned by instrument
+
+    Methods
+    -------
+    command(cmd) : str
+        Sends command to DS345 and returns response
+    identify() : bool
+        Returns True if serial device is connected to a DS345
+    '''
 
     def __init__(self):
         super(DS345, self).__init__(baudrate=9600,
@@ -17,24 +46,41 @@ class DS345(SerialDevice):
         self._mute = False
 
     def command(self, cmd):
-        """Send cmd to function generator and return response"""
+        '''Send cmd to function generator and return response
+
+        Parameters
+        ----------
+        cmd : str
+            String with command for DS345
+
+        Returns
+        -------
+        result : str
+            String returned by DS345
+        '''
         self.write(cmd)
         return self.readln()
 
     def identify(self):
-        """Check identity of instrument"""
+        '''Check identity of instrument
+
+        Returns
+        -------
+        identify : bool
+            True if attached instrument identifies itself as a DS345
+        '''
         idn = self.identification
         return re.search('DS345', idn)
 
     # Properties
     @property
     def identification(self):
-        """Read identification string from function generator"""
+        '''Identification string from function generator'''
         return self.command('*IDN?')
 
     @property
     def mute(self):
-        """Output muted"""
+        '''Output muted'''
         return self._mute
 
     @mute.setter
@@ -49,7 +95,7 @@ class DS345(SerialDevice):
     # Function output adjustable properties
     @property
     def amplitude(self):
-        """Output amplitude [Vpp]"""
+        '''Output amplitude [Vpp]'''
         if self.mute:
             return self._amplitude
         else:
@@ -63,7 +109,7 @@ class DS345(SerialDevice):
 
     @property
     def frequency(self):
-        """Output frequency [Hz]"""
+        '''Output frequency [Hz]'''
         return float(self.command('FREQ?'))
 
     @frequency.setter
@@ -72,7 +118,7 @@ class DS345(SerialDevice):
 
     @property
     def offset(self):
-        """Output offset [V]"""
+        '''Output offset [V]'''
         return float(self.command('OFFS?'))
 
     @offset.setter
@@ -81,7 +127,7 @@ class DS345(SerialDevice):
 
     @property
     def phase(self):
-        """Output phase [degrees]"""
+        '''Output phase [degrees]'''
         return float(self.command('PHSE?'))
 
     @phase.setter
@@ -90,14 +136,14 @@ class DS345(SerialDevice):
 
     @property
     def waveform(self):
-        """Output waveform
+        '''Output waveform
            0: sine
            1: square
            2: triangle
            3: ramp
            4: noise
            5: arbitrary
-        """
+        '''
         return int(self.command('FUNC?'))
 
     @waveform.setter
