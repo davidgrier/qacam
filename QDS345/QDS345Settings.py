@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from qqcqm.common.QSettingsWidget import QSettingsWidget
+from qacam.common.QSettingsWidget import QSettingsWidget
 from DS345Settings_UI import Ui_DS345Settings
 
 
 class QDS345Settings(QSettingsWidget):
+
     '''Configuration for a Stanford Research Systems
     DS345 Function Generator
     '''
