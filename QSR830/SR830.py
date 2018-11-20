@@ -6,18 +6,78 @@ import re
 
 
 class SR830(SerialDevice):
+    '''Abstraction of Stanford Research SR830 Lockin Amplifier
+
+    ...
+
+    Attributes
+    ----------
+    phase : float
+        Phase offset relative to reference [degrees]
+    source : int
+        Reference source
+    frequency : float
+        Reference frequency [Hz]
+    trigger : int
+        Trigger mode for external reference
+    harmonic : int
+        Detection harmonic
+    amplitude : float
+        Amplitude of internal reference output [V]
+    input : int
+        Input configuration
+    grounding : int
+        Input shield grounding
+    coupling : int
+        Input coupling
+    filter : int
+        Input line filter mode
+    sensitivity : int
+        Input sensitivity mode
+    reserve : int
+        Dynamic reserve mode
+    timeConstant : int
+        Time constant mode
+    slope : int
+        Low-pass filter slope mode
+    synchronous : int
+        Synchronous filter status
+    identification : str
+        Identification string returned by instrument
+
+    Methods
+    -------
+    identify() : bool
+        Returns True if attached instrument is a SR830
+    busy() : bool
+        Returns True if the instrument is busy
+
+    '''
 
     def __init__(self, baudrate=9600, timeout=1):
         super(SR830, self).__init__(baudrate=baudrate,
                                     timeout=timeout)
 
     def identify(self):
-        """Check identity of instrument"""
+        '''Check identity of instrument
+
+        Returns
+        -------
+        identify : bool
+            True if attached instrument is a SR830
+        '''
         idn = self.identification
         return re.search('SR830', idn)
 
     def busy(self):
-        """Returns True if instrument is busy"""
+        '''Check if instrument is busy
+
+        Returns
+        -------
+        busy : bool
+            True if instrument is executing a command or has
+            an error condition.
+        '''
         status = self.status()
         executing = not bool(status & 0b11)
         error = bool(status & 0b100)
@@ -27,7 +87,7 @@ class SR830(SerialDevice):
 
     @property
     def identification(self):
-        """Read identification string from lockin"""
+        '''Identification string returned by instrument'''
         self.write('*IDN?')
         return self.readln()
 
@@ -35,7 +95,7 @@ class SR830(SerialDevice):
 
     @property
     def phase(self):
-        """Reference phase shift in degrees"""
+        '''Phase offset relative to reference [degrees]'''
         return np.float(self.command('PHAS?'))
 
     @phase.setter
@@ -44,10 +104,10 @@ class SR830(SerialDevice):
 
     @property
     def source(self):
-        """Reference source
+        '''Reference source:
            0: external
            1: internal
-        """
+        '''
         return int(self.command('FMOD?'))
 
     @source.setter
@@ -56,7 +116,7 @@ class SR830(SerialDevice):
 
     @property
     def frequency(self):
-        """Reference frequency"""
+        '''Reference frequency [Hz]'''
         return float(self.command('FREQ?'))
 
     @frequency.setter
@@ -65,11 +125,11 @@ class SR830(SerialDevice):
 
     @property
     def trigger(self):
-        """Reference trigger mode for external reference
+        '''Reference trigger mode for external reference
            0: Sine zero crossing
            1: TTL rising edge
            2: TTL falling edge
-        """
+        '''
         return int(self.command('RSLP?'))
 
     @trigger.setter
@@ -78,7 +138,7 @@ class SR830(SerialDevice):
 
     @property
     def harmonic(self):
-        """Detection harmonic"""
+        '''Detection harmonic'''
         return int(self.command('HARM?'))
 
     @harmonic.setter
@@ -87,7 +147,7 @@ class SR830(SerialDevice):
 
     @property
     def amplitude(self):
-        """Amplitude of sine output"""
+        '''Amplitude of sine output [V]'''
         return float(self.command('SLVL?'))
 
     @amplitude.setter
@@ -97,12 +157,12 @@ class SR830(SerialDevice):
     # Input and filter commands
     @property
     def input(self):
-        """Input configuration:
+        '''Input configuration:
            0: Input A
            1: A-B
            2: I (1 MOhm)
            3: I (100 MOhm)
-        """
+        '''
         return int(self.command('ISRC?'))
 
     @input.setter
@@ -111,10 +171,10 @@ class SR830(SerialDevice):
 
     @property
     def grounding(self):
-        """Input shield grounding:
+        '''Input shield grounding mode
            0: shield is floating
            1: shield is grounded
-        """
+        '''
         return int(self.command('IGND?'))
 
     @grounding.setter
@@ -123,10 +183,10 @@ class SR830(SerialDevice):
 
     @property
     def coupling(self):
-        """Input coupling:
+        '''Input coupling mode
            0: AC coupling
            1: DC coupling
-        """
+        '''
         return int(self.command('ICPL?'))
 
     @coupling.setter
@@ -135,12 +195,12 @@ class SR830(SerialDevice):
 
     @property
     def filter(self):
-        """Input line filter:
+        '''Input line filter mode
            0: No filters
            1: Line frequency notch filter
            2: 2x line frequency filter
            3: Both notch filters
-        """
+        '''
         return int(self.command('ILIN?'))
 
     @filter.setter
@@ -150,7 +210,7 @@ class SR830(SerialDevice):
     # Gain and time constant commands
     @property
     def sensitivity(self):
-        """Input sensitivity
+        '''Input sensitivity mode
            0 : 2 nV/fA    13: 50 µV/pA
            1 : 5 nV/fA    14: 100 µV/pA
            2 : 10 nV/fA   15: 200 µV/pA
@@ -165,7 +225,7 @@ class SR830(SerialDevice):
            11: 10 µV/pA   24: 200 mV/nA
            12: 20 µV/pA   25: 500 mV/nA
                           26: 1 V/µA
-        """
+        '''
         return int(self.command('SENS?'))
 
     @sensitivity.setter
@@ -174,11 +234,11 @@ class SR830(SerialDevice):
 
     @property
     def reserve(self):
-        """Reserve mode
+        '''Dynamic reserve mode
            0: High reserve
            1: Normal
            2: Low noise (minimum)
-        """
+        '''
         return int(self.command('RMOD?'))
 
     @reserve.setter
@@ -187,7 +247,7 @@ class SR830(SerialDevice):
 
     @property
     def timeConstant(self):
-        """Time constant:
+        '''Time constant mode
            0: 10 µs   10: 1 s
            1: 30 µs   11: 3 s
            2: 100 µs  12: 10 s
@@ -198,7 +258,7 @@ class SR830(SerialDevice):
            7: 30 ms   17: 3 ks
            8: 100 ms  18: 10 ks
            9: 300 ms  19: 30 ks
-        """
+        '''
         return int(self.command('OFLT?'))
 
     @timeConstant.setter
@@ -207,12 +267,12 @@ class SR830(SerialDevice):
 
     @property
     def slope(self):
-        """Low pass filter slope:
+        '''Low pass filter slope mode
            0: 6 dB/oct
            1: 12 dB/oct
            2: 18 dB/oct
            3: 24 dB/oct
-        """
+        '''
         return int(self.command('OFSL?'))
 
     @slope.setter
@@ -221,11 +281,11 @@ class SR830(SerialDevice):
 
     @property
     def synchronous(self):
-        """Synchronous filter status:
+        '''Synchronous filter mode
            Used if detection frequency is less than 200 Hz
            0: Off
            1: On
-        """
+        '''
         return int(self.command('SYNC?'))
 
     @synchronous.setter
@@ -298,15 +358,15 @@ class SR830(SerialDevice):
 
     # Status reporting commands
     def clearStatusRegisters(self):
-        """Clear status regiesters except status enable registers"""
+        '''Clear status regiesters except status enable registers'''
         self.write('*CLS')
 
     def status(self):
-        """Read status byte"""
+        '''Read status byte'''
         res = self.command('*STB?')
         return np.uint8(res)
 
     def error(self):
-        """Read error status byte"""
+        '''Read error status byte'''
         res = self.command('ERRS?')
         return np.uint8(res)
