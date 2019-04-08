@@ -10,7 +10,6 @@ class Task(object):
     def __init__(self,
                  parent=None):
         self.parent = parent
-        self._done = False
 
     def setup(self):
         '''Set up before scan starts'''
@@ -18,4 +17,4 @@ class Task(object):
 
     def finish(self):
         '''Perform tasks after scan is complete'''
-        pass
+        logger.info('complete')
