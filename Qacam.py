@@ -39,10 +39,10 @@ class Qacam(QMainWindow):
 
     def configureUi(self):
         # hide unnecessary functionality
-        # self.ui.polargraph.ui.frameBelt.hide()
+        self.ui.polargraph.ui.groupBelt.hide()
         self.ui.functionGenerator.ui.offset.setDisabled(True)
-        # self.ui.lockin.ui.frameAuto.hide()
-        # self.ui.lockin.ui.frameReference.hide()
+        self.ui.lockin.ui.groupAuto.hide()
+        self.ui.lockin.ui.groupReference.hide()
 
     def getDevices(self):
         self.config = Configure(self)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>868</width>
-    <height>620</height>
+    <width>920</width>
+    <height>789</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -160,7 +160,7 @@
      <widget class="QWidget" name="controlWidget" native="true">
       <property name="minimumSize">
        <size>
-        <width>250</width>
+        <width>320</width>
         <height>0</height>
        </size>
       </property>
@@ -170,7 +170,13 @@
         <height>16777215</height>
        </size>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="margin">
+        <number>2</number>
+       </property>
        <item>
         <widget class="QLabel" name="labelPolargraph">
          <property name="font">
@@ -185,7 +191,35 @@
         </widget>
        </item>
        <item>
-        <widget class="QPolargraphSettings" name="polargraph" native="true"/>
+        <widget class="QFrame" name="framePolargraph">
+         <property name="frameShape">
+          <enum>QFrame::Panel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPolargraphSettings" name="polargraph" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>313</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="labelFunctionGenerator">
@@ -219,7 +253,14 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QDS345Settings" name="functionGenerator" native="true"/>
+           <widget class="QDS345Settings" name="functionGenerator" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>253</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -238,13 +279,34 @@
         </widget>
        </item>
        <item>
-        <widget class="QSR830Settings" name="lockin" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
+        <widget class="QFrame" name="frameLockin">
+         <property name="frameShape">
+          <enum>QFrame::Panel</enum>
          </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QSR830Settings" name="lockin" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>277</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -255,12 +317,19 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>423</height>
+           <height>352</height>
           </size>
          </property>
         </spacer>
        </item>
       </layout>
+      <zorder>labelPolargraph</zorder>
+      <zorder>labelFunctionGenerator</zorder>
+      <zorder>frameFunctionGenerator</zorder>
+      <zorder>labelLockin</zorder>
+      <zorder>frameLockin</zorder>
+      <zorder>framePolargraph</zorder>
+      <zorder>verticalSpacer</zorder>
      </widget>
     </item>
    </layout>
@@ -270,8 +339,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>868</width>
-     <height>22</height>
+     <width>920</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

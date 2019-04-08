@@ -11,7 +11,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_SR830Settings(object):
     def setupUi(self, SR830Settings):
         SR830Settings.setObjectName("SR830Settings")
-        SR830Settings.resize(238, 517)
+        SR830Settings.resize(277, 517)
+        SR830Settings.setMinimumSize(QtCore.QSize(277, 0))
         self.verticalLayout = QtWidgets.QVBoxLayout(SR830Settings)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setSpacing(1)

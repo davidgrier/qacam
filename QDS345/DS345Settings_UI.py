@@ -11,7 +11,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DS345Settings(object):
     def setupUi(self, DS345Settings):
         DS345Settings.setObjectName("DS345Settings")
-        DS345Settings.resize(442, 441)
+        DS345Settings.resize(253, 137)
+        DS345Settings.setMinimumSize(QtCore.QSize(253, 0))
         self.verticalLayout = QtWidgets.QVBoxLayout(DS345Settings)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setSpacing(1)
