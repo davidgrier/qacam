@@ -23,6 +23,7 @@ logger = logging.getLogger('Qacam')
 
 
 class Qacam(QMainWindow):
+
     def __init__(self):
         super(Qacam, self).__init__()
         pg.setConfigOption('background', 'w')
@@ -38,10 +39,10 @@ class Qacam(QMainWindow):
 
     def configureUi(self):
         # hide unnecessary functionality
-        self.ui.polargraph.ui.frameBelt.hide()
+        # self.ui.polargraph.ui.frameBelt.hide()
         self.ui.functionGenerator.ui.offset.setDisabled(True)
-        self.ui.lockin.ui.frameAuto.hide()
-        self.ui.lockin.ui.frameReference.hide()
+        # self.ui.lockin.ui.frameAuto.hide()
+        # self.ui.lockin.ui.frameReference.hide()
 
     def getDevices(self):
         self.config = Configure(self)
@@ -166,7 +167,7 @@ class Qacam(QMainWindow):
         self.data.append([val for tup in data for val in tup])
         x, y = data[1]
         amp, phi = data[2]
-        hue = (phi/360. + 1.) % 1.
+        hue = (phi / 360. + 1.) % 1.
         brush = pg.mkBrush(color=pg.hsvColor(hue))
         self.traceItem.addPoints([x], [y], brush=brush)
 
@@ -183,7 +184,7 @@ class Qacam(QMainWindow):
             xp, yp = data[1]
         self.ui.n1.display(n1)
         self.ui.n2.display(n2)
-        x = [-ell/2, xp, ell/2]
+        x = [-ell / 2, xp, ell / 2]
         y = [0, yp, 0]
         self.beltItem.setData(x, y)
 

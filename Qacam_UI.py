@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Qacam_UI.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.2
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 

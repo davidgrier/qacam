@@ -2,7 +2,7 @@ RUNFILE := Qacam.py
 UIFILE := $(wildcard *.ui)
 PYFILE := $(UIFILE:.ui=.py)
 SUBDIRS := $(wildcard Q*/.)
-MAKE = gmake
+MAKE = make
 PYTHON = python
 PYUIC = pyuic5
 
@@ -15,6 +15,13 @@ $(SUBDIRS):
 
 test: $(PYFILE)
 	$(PYTHON) $(RUNFILE)
+
+clean:
+	-rm $(PYFILE)
+	for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir clean; \
+	done
+
 
 %.py: %.ui
 	$(PYUIC) $< -x -o $@

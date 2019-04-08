@@ -10,5 +10,8 @@ all: $(PYFILE)
 test: $(PYFILE)
 	$(PYTHON) $(PYFILE)
 
+clean: $(PYFILE)
+	-rm $(PYFILE)
+
 %.py: %.ui
 	$(PYUIC) $< -x -o $@
