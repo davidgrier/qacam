@@ -9,6 +9,7 @@ logger.setLevel(logging.INFO)
 
 
 class MotorsFake(object):
+
     """Control the pair of stepper motors driving a polargraph"""
 
     def __init__(self):
@@ -28,7 +29,7 @@ class MotorsFake(object):
         if delta <= 0:
             self._tstop = -1.
         else:
-            self._tstop = self._tstart + delta/self.motor_speed
+            self._tstop = self._tstart + delta / self.motor_speed
 
     def home(self):
         """Move to home position"""
@@ -41,7 +42,7 @@ class MotorsFake(object):
     @property
     def indexes(self):
         sleep(0.05)
-        f = (time() - self._tstart)/(self._tstop - self._tstart)
+        f = (time() - self._tstart) / (self._tstop - self._tstart)
         if f >= 1.:
             self._indexes = self._target
         else:
@@ -56,6 +57,7 @@ class MotorsFake(object):
 
 
 class PolargraphFake(MotorsFake):
+
     """Control a polargraph
 
     The polargraph consists of two stepper motors with GT2 gears
@@ -71,7 +73,6 @@ class PolargraphFake(MotorsFake):
                  steps=200.,  # motor steps per revolution
                  ell=1.,  # separation between motors [m]
                  y0=0.1,  # rest displacement from motors' centerline [m]
-                 y1=0.,  # vertical start of scan area [m]
                  width=0.6,  # width of scan area [m]
                  height=0.6,  # height of scan area [m]
                  dy=0.005):  # vertical displacement between scan lines [m]
@@ -88,7 +89,8 @@ class PolargraphFake(MotorsFake):
         self.y0 = float(y0)
 
         # Scan configuration
-        self.y1 = float(y1)
+        self.x1 = 0.
+        self.y1 = 0.
         self.width = float(width)
         self.height = float(height)
         self.dy = float(dy)
@@ -110,10 +112,10 @@ class PolargraphFake(MotorsFake):
     def position(self):
         """Current coordinates in meters"""
         n1, n2 = self.indexes
-        s1 = self.s0 + n1*self.ds
-        s2 = self.s0 - n2*self.ds
-        x = (s2**2 - s1**2)/(2. * self.ell)
-        y = np.sqrt((s1**2 + s2**2)/2. - self.ell**2/4. - x**2)
+        s1 = self.s0 + n1 * self.ds
+        s2 = self.s0 - n2 * self.ds
+        x = (s2**2 - s1**2) / (2. * self.ell)
+        y = np.sqrt((s1**2 + s2**2) / 2. - self.ell**2 / 4. - x**2)
         return x, y
 
     @property
@@ -125,3 +127,6 @@ class PolargraphFake(MotorsFake):
     def speed(self, value):
         self.motor_speed = value * (self.steps /
                                     (self.circumference * self.unit))
+
+    def busy(self):
+        return False

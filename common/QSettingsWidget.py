@@ -8,10 +8,11 @@ import inspect
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class QSettingsWidget(QWidget):
+
     '''A glue class that connects a device with a GUI
 
     An object of this class associates properties of a device
@@ -98,6 +99,7 @@ class QSettingsWidget(QWidget):
         if name in self.properties:
             self.setDeviceProperty(name, value)
             self.setUiProperty(name, value)
+            logger.debug('setting: {}: {}'.format(name, value))
         else:
             logger.warning('unknown property: {}'.format(name))
 
