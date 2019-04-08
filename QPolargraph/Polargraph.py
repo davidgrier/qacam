@@ -10,6 +10,7 @@ logger.setLevel(logging.INFO)
 
 
 class Motors(SerialDevice):
+
     '''
     Abstraction of stepper moters controlled by Arduino
 
@@ -115,6 +116,7 @@ class Motors(SerialDevice):
 
 
 class Polargraph(Motors):
+
     '''
     Abstraction of a polargraph
 
@@ -154,7 +156,7 @@ class Polargraph(Motors):
     s0 : float
         Length of belt from motor to payload at home position [m]
     position : (x, y)
-       Report current coordinates of payload measured in 
+       Report current coordinates of payload measured in
        meters from home position.
     speed : float
        Translation speed [mm/s]
@@ -172,7 +174,6 @@ class Polargraph(Motors):
                  steps=200.,  # motor steps per revolution
                  ell=1.,  # separation between motors [m]
                  y0=0.1,  # rest displacement from motors' centerline [m]
-                 y1=0.,  # vertical start of scan area [m]
                  width=0.6,  # width of scan area [m]
                  height=0.6,  # height of scan area [m]
                  dy=0.005):  # vertical displacement between scan lines [m]
@@ -189,7 +190,8 @@ class Polargraph(Motors):
         self.y0 = float(y0)
 
         # Scan configuration
-        self.y1 = float(y1)
+        self.x1 = 0.
+        self.y1 = 0.
         self.width = float(width)
         self.height = float(height)
         self.dy = float(dy)
@@ -216,10 +218,10 @@ class Polargraph(Motors):
     def position(self):
         '''Current coordinates in meters'''
         n1, n2 = self.indexes
-        s1 = self.s0 + n1*self.ds
-        s2 = self.s0 - n2*self.ds
-        x = (s2**2 - s1**2)/(2. * self.ell)
-        ysq = (s1**2 + s2**2)/2. - self.ell**2/4. - x**2
+        s1 = self.s0 + n1 * self.ds
+        s2 = self.s0 - n2 * self.ds
+        x = (s2**2 - s1**2) / (2. * self.ell)
+        ysq = (s1**2 + s2**2) / 2. - self.ell**2 / 4. - x**2
         if ysq < 0:
             print(n1, n2, self.s0, s1, s2, ysq)
             y = self.y0

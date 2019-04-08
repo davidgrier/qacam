@@ -6,6 +6,7 @@ from Polargraph_UI import Ui_Polargraph
 
 
 class QPolargraphSettings(QSettingsWidget):
+
     """Configuration for a polargraph"""
 
     def __init__(self, parent=None, device=None):
@@ -15,8 +16,8 @@ class QPolargraphSettings(QSettingsWidget):
 
     @QtCore.pyqtSlot(float)
     def limitRange(self, value):
-        self.ui.width.setMaximum(0.9*value)
-        self.ui.height.setMaximum(0.9*value)
+        self.ui.width.setMaximum(0.9 * value)
+        self.ui.height.setMaximum(0.9 * value)
 
     def configureUi(self):
         self.ui.ell.valueChanged.connect(self.limitRange)

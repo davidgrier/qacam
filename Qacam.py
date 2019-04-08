@@ -87,6 +87,8 @@ class Qacam(QMainWindow):
         ui = self.ui.polargraph.ui
         ui.ell.valueChanged.connect(self.plotPath)
         ui.y0.valueChanged.connect(self.plotPath)
+        ui.x1.valueChanged.connect(self.plotPath)
+        ui.y1.valueChanged.connect(self.plotPath)
         ui.height.valueChanged.connect(self.plotPath)
         ui.width.valueChanged.connect(self.plotPath)
         ui.dy.valueChanged.connect(self.plotPath)
