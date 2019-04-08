@@ -128,7 +128,7 @@ class Ui_Polargraph(object):
         self.labelY1.setObjectName("labelY1")
         self.gridLayout.addWidget(self.labelY1, 0, 3, 1, 1)
         self.y1 = QtWidgets.QDoubleSpinBox(self.groupScan)
-        self.y1.setMinimum(-1.0)
+        self.y1.setMinimum(0.0)
         self.y1.setMaximum(1.0)
         self.y1.setSingleStep(0.01)
         self.y1.setObjectName("y1")
