@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from qacam.common.SerialDevice import SerialDevice
+from common.SerialDevice import SerialDevice
 import numpy as np
 import re
 import serial
@@ -44,6 +44,7 @@ class DS345(SerialDevice):
                                     parity=serial.PARITY_NONE,
                                     stopbits=serial.STOPBITS_TWO)
         self._mute = False
+        self.amplitude = 0.
 
     def command(self, cmd):
         '''Send cmd to function generator and return response

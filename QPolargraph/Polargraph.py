@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from qacam.common.SerialDevice import SerialDevice
+from common.SerialDevice import SerialDevice
 import numpy as np
 from time import sleep
 
