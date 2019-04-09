@@ -145,10 +145,10 @@ class Qacam(QMainWindow):
         self.ui.scan.setEnabled(True)
         self.ui.controlWidget.setEnabled(True)
         d = np.array(self.data)
-        x0 = self.scanner.x0
-        x1 = self.scanner.x1
-        y0 = self.scanner.y0
-        y1 = self.scanner.y1
+        x0 = self.scanner.xstart
+        x1 = self.scanner.xstop
+        y0 = self.scanner.ystart
+        y1 = self.scanner.ystop
         grid_x, grid_y = np.mgrid[x0:x1:128j, y0:y1:128j]
         self.amplitude = griddata(d[:, 2:4], d[:, 4],
                                   (grid_x, grid_y), method='cubic')
