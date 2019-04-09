@@ -73,14 +73,14 @@ class QacamScan(QObject):
         polargraph = self.polargraph.ui
         height = polargraph.height.value()
         width = polargraph.width.value()
-        dy = polargraph.dy.value()
+        x0 = polargraph.x1.value() - width / 2.
+        x1 = x0 + width
         y0 = polargraph.y0.value()
         y1 = y0 + polargraph.y1.value()
+        dy = polargraph.dy.value()
         yright = np.arange(y1, y1 + height, dy)
         yleft = yright + dy / 2.
         npts = yright.size
-        x0 = polargraph.x1.value() - width / 2.
-        x1 = x0 + width
         rright = list(zip([x0] * npts, yright))
         rleft = list(zip([x1] * npts, yleft))
         coords = [(0, y0), (polargraph.x1.value(), y1)]
@@ -88,10 +88,10 @@ class QacamScan(QObject):
             coords.append(rright[i])
             coords.append(rleft[i])
         self.path = np.array(coords)
-        self.x0 = x0
-        self.x1 = x1
-        self.y0 = y0
-        self.y1 = self.y0 + height
+        #self.x0 = x0
+        #self.x1 = x1
+        #self.y0 = y0
+        #self.y1 = self.y0 + height
 
     @pyqtSlot()
     def runScan(self):
