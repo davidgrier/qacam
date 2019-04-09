@@ -2,17 +2,17 @@
 
 from PyQt5.QtWidgets import (QMainWindow, QFileDialog)
 from PyQt5.QtCore import (pyqtSlot, Qt, QThread)
-from qacam.Qacam_UI import Ui_Qacam
+from Qacam_UI import Ui_Qacam
 import pyqtgraph as pg
-from qacam.QPolargraph.Polargraph import Polargraph
-from qacam.QSR830.SR830 import SR830
-from qacam.QDS345.DS345 import DS345
-from qacam.QPolargraph.PolargraphFake import PolargraphFake
-from qacam.QSR830.SR830Fake import SR830Fake
-from qacam.QDS345.DS345Fake import DS345Fake
+from QPolargraph.Polargraph import Polargraph
+from QSR830.SR830 import SR830
+from QDS345.DS345 import DS345
+from QPolargraph.PolargraphFake import PolargraphFake
+from QSR830.SR830Fake import SR830Fake
+from QDS345.DS345Fake import DS345Fake
 
 from QacamScan import QacamScan
-from qacam.common.Configure import Configure
+from common.Configure import Configure
 import numpy as np
 from scipy.interpolate import griddata
 import csv
@@ -226,6 +226,7 @@ class Qacam(QMainWindow):
 if __name__ == "__main__":
     from PyQt5.QtWidgets import QApplication
     import sys
+
     app = QApplication(sys.argv)
     instrument = Qacam()
     sys.exit(app.exec_())

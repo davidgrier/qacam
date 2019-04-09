@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from qacam.common.QSettingsWidget import QSettingsWidget
-from DS345Settings_UI import Ui_DS345Settings
+from common.QSettingsWidget import QSettingsWidget
+from .DS345Settings_UI import Ui_DS345Settings
 
 
 class QDS345Settings(QSettingsWidget):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore
-from qacam.common.QSettingsWidget import QSettingsWidget
-from Polargraph_UI import Ui_Polargraph
+from common.QSettingsWidget import QSettingsWidget
+from .Polargraph_UI import Ui_Polargraph
 
 
 class QPolargraphSettings(QSettingsWidget):
