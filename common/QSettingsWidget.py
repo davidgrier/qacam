@@ -136,7 +136,7 @@ class QSettingsWidget(QWidget):
             logger.info('Setting {}: {}'.format(name, value))
             while self.device.busy():
                 if self.device.error:
-                    logger.warn('device error')
+                    logger.warning('device error')
 
     def setUiProperty(self, name, value):
         '''Set UI property
@@ -158,7 +158,7 @@ class QSettingsWidget(QWidget):
         elif isinstance(wid, QPushButton):
             pass
         else:
-            logger.warn('Unknown property: {}: {}'.format(name, type(wid)))
+            logger.warning('Unknown property: {}: {}'.format(name, type(wid)))
 
     @property
     def settings(self):
@@ -222,7 +222,7 @@ class QSettingsWidget(QWidget):
         autosetmethod()
         while self.device.busy():
             if self.device.error:
-                logger.warn('device error')
+                logger.warning('device error')
         self.updateUi
 
     def connectSignals(self):
@@ -237,7 +237,8 @@ class QSettingsWidget(QWidget):
             elif isinstance(wid, QPushButton):
                 wid.clicked.connect(self.autoUpdateDevice)
             else:
-                logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))
+                logger.warning(
+                    'Unknown property: {}: {}'.format(prop, type(wid)))
 
     def disconnectSignals(self):
         for prop in self.properties:
@@ -251,4 +252,5 @@ class QSettingsWidget(QWidget):
             elif isinstance(wid, QPushButton):
                 wid.clicked.disconnect(self.autoUpdateDevice)
             else:
-                logger.warn('Unknown property: {}: {}'.format(prop, type(wid)))
+                logger.warning(
+                    'Unknown property: {}: {}'.format(prop, type(wid)))

@@ -76,7 +76,7 @@ class Motors(SerialDevice):
             res = self.command('R')
             header, running = res.split(':')
         except Exception as ex:
-            logger.warn('Could not read running status: {}'.format(ex))
+            logger.warning('Could not read running status: {}'.format(ex))
             running = 0
         return bool(int(running))
 
@@ -89,7 +89,7 @@ class Motors(SerialDevice):
             n1 = int(n1)
             n2 = int(n2)
         except Exception as ex:
-            logger.warn('Did not read position: {}'.format(ex))
+            logger.warning('Did not read position: {}'.format(ex))
             n1 = 0
             n2 = 0
         return n1, n2
@@ -105,7 +105,7 @@ class Motors(SerialDevice):
             res = self.command('V')
             header, speed = res.split(':')
         except Exception as ex:
-            logger.warn('Could not read maximum speed: {}'.format(ex))
+            logger.warning('Could not read maximum speed: {}'.format(ex))
             speed = 0
         return float(speed)
 
