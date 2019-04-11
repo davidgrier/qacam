@@ -160,21 +160,30 @@
      <widget class="QWidget" name="controlWidget" native="true">
       <property name="minimumSize">
        <size>
-        <width>320</width>
+        <width>340</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>300</width>
+        <width>350</width>
         <height>16777215</height>
        </size>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="leftMargin">
+        <number>4</number>
+       </property>
+       <property name="topMargin">
         <number>2</number>
        </property>
-       <property name="margin">
+       <property name="rightMargin">
+        <number>4</number>
+       </property>
+       <property name="bottomMargin">
         <number>2</number>
        </property>
        <item>
@@ -212,7 +221,7 @@
            <widget class="QPolargraphSettings" name="polargraph" native="true">
             <property name="minimumSize">
              <size>
-              <width>313</width>
+              <width>333</width>
               <height>0</height>
              </size>
             </property>

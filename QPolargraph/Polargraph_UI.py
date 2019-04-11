@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Polargraph_UI.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,8 +11,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Polargraph(object):
     def setupUi(self, Polargraph):
         Polargraph.setObjectName("Polargraph")
-        Polargraph.resize(333, 268)
-        Polargraph.setMinimumSize(QtCore.QSize(313, 0))
+        Polargraph.resize(333, 265)
+        Polargraph.setMinimumSize(QtCore.QSize(333, 0))
         self.verticalLayout = QtWidgets.QVBoxLayout(Polargraph)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)
         self.verticalLayout.setSpacing(1)
@@ -104,7 +104,7 @@ class Ui_Polargraph(object):
         self.gridLayout_2.addWidget(self.stepSpeed, 1, 4, 1, 1)
         self.verticalLayout.addWidget(self.groupBelt)
         self.groupScan = QtWidgets.QGroupBox(Polargraph)
-        self.groupScan.setMinimumSize(QtCore.QSize(309, 105))
+        self.groupScan.setMinimumSize(QtCore.QSize(0, 0))
         font = QtGui.QFont()
         font.setBold(False)
         font.setWeight(50)

@@ -7,12 +7,12 @@
     <x>0</x>
     <y>0</y>
     <width>333</width>
-    <height>268</height>
+    <height>265</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>313</width>
+    <width>333</width>
     <height>0</height>
    </size>
   </property>
@@ -285,8 +285,8 @@
     <widget class="QGroupBox" name="groupScan">
      <property name="minimumSize">
       <size>
-       <width>309</width>
-       <height>105</height>
+       <width>0</width>
+       <height>0</height>
       </size>
      </property>
      <property name="font">
