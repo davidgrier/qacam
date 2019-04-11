@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'SR830Settings_UI.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_SR830Settings(object):
     def setupUi(self, SR830Settings):
         SR830Settings.setObjectName("SR830Settings")
-        SR830Settings.resize(277, 517)
+        SR830Settings.resize(277, 454)
         SR830Settings.setMinimumSize(QtCore.QSize(277, 0))
         self.verticalLayout = QtWidgets.QVBoxLayout(SR830Settings)
         self.verticalLayout.setContentsMargins(2, 2, 2, 2)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>313</width>
-    <height>237</height>
+    <width>333</width>
+    <height>268</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -318,6 +318,20 @@
        <number>1</number>
       </property>
       <item row="0" column="0" colspan="2">
+       <widget class="QPushButton" name="center">
+        <property name="text">
+         <string>Center</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="2">
+       <widget class="QPushButton" name="home">
+        <property name="text">
+         <string>Home</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="labelX1">
         <property name="text">
          <string>x1</string>
@@ -327,7 +341,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="x1">
         <property name="suffix">
          <string> m</string>
@@ -343,7 +357,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="1" column="2">
        <widget class="QLabel" name="labelY1">
         <property name="text">
          <string>y1</string>
@@ -353,7 +367,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="4">
+      <item row="1" column="3">
        <widget class="QDoubleSpinBox" name="y1">
         <property name="suffix">
          <string> m</string>
@@ -369,7 +383,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="labelWidth">
         <property name="text">
          <string>width</string>
@@ -379,7 +393,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="width">
         <property name="suffix">
          <string> m</string>
@@ -398,7 +412,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
+      <item row="2" column="2">
        <widget class="QLabel" name="labelHeight">
         <property name="text">
          <string>height</string>
@@ -408,7 +422,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="4">
+      <item row="2" column="3">
        <widget class="QDoubleSpinBox" name="height">
         <property name="suffix">
          <string> m</string>
@@ -427,7 +441,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="labelSpeed">
         <property name="statusTip">
          <string>Polargraph: Translation speed</string>
@@ -440,7 +454,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="3" column="1">
        <widget class="QDoubleSpinBox" name="speed">
         <property name="suffix">
          <string> mm/s</string>
@@ -462,7 +476,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
+      <item row="3" column="2">
        <widget class="QLabel" name="labelDy">
         <property name="text">
          <string>Δy</string>
@@ -472,7 +486,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="4">
+      <item row="3" column="3">
        <widget class="QDoubleSpinBox" name="dy">
         <property name="suffix">
          <string> m</string>
