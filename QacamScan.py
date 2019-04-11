@@ -43,7 +43,7 @@ class QacamScan(QObject):
         Emitted when polargraph is moving but not recording data
         Value is list of polargraph indexes
         and polargraph position.
-    finished()
+    finished(update)
         Emitted when scan completes
 
     Slots
@@ -55,7 +55,7 @@ class QacamScan(QObject):
 
     newData = pyqtSignal(object)
     motion = pyqtSignal(object)
-    finished = pyqtSignal()
+    finished = pyqtSignal(bool)
 
     def __init__(self, parent=None,
                  polargraph=None,
@@ -95,6 +95,34 @@ class QacamScan(QObject):
         self.ystart = ystart
         self.ystop = ystop
 
+    @pyqtSlot(float, float)
+    def moveTo(self, xtarget, ytarget):
+        if self._scanning or self._reset:
+            self._reset = False
+            return
+        self._scanning = True
+        polargraph = self.polargraph.device
+        polargraph.goto(xtarget, ytarget)
+        while polargraph.running():
+            self.newData.emit([polargraph.indexes,
+                               polargraph.position,
+                               (0., 0.)])
+        polargraph.release()
+        self._scanning = False
+        self.finished.emit(False)
+
+    @pyqtSlot()
+    def moveToCenter(self):
+        xtarget = (self.xstop + self.xstart) / 2.
+        ytarget = (self.ystop + self.ystart) / 2.
+        self.moveTo(xtarget, ytarget)
+
+    @pyqtSlot()
+    def moveToHome(self):
+        xtarget = 0.
+        ytarget = self.polargraph.ui.y0.value()
+        self.moveTo(xtarget, ytarget)
+
     @pyqtSlot()
     def runScan(self):
         if self._scanning or self._reset:
@@ -120,7 +148,7 @@ class QacamScan(QObject):
             self.motion.emit([polargraph.indexes, polargraph.position])
         polargraph.release()
         self._scanning = False
-        self.finished.emit()
+        self.finished.emit(True)
 
     def scanning(self):
         return self._scanning

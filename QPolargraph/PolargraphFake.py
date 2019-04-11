@@ -42,7 +42,10 @@ class MotorsFake(object):
     @property
     def indexes(self):
         sleep(0.05)
-        f = (time() - self._tstart) / (self._tstop - self._tstart)
+        try:
+            f = (time() - self._tstart) / (self._tstop - self._tstart)
+        except ZeroDivisionError:
+            f = 1.
         if f >= 1.:
             self._indexes = self._target
         else:

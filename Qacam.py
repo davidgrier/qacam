@@ -35,6 +35,7 @@ class Qacam(QMainWindow):
         self.initScanner()
         self.connectSignals()
         self.initPlots()
+        self.data = []
         self.show()
 
     def configureUi(self):
@@ -75,14 +76,20 @@ class Qacam(QMainWindow):
         self.scanner.moveToThread(self.thread)
 
     def connectSignals(self):
-        self.ui.scan.clicked.connect(lambda v:
-                                     self.ui.controlWidget.setEnabled(False))
-        self.ui.scan.clicked.connect(self.scanner.runScan)
-        self.ui.scan.clicked.connect(self.toggleScan)
+        onscan = self.ui.scan.clicked.connect
+        onscan(lambda v: self.ui.controlWidget.setEnabled(False))
+        onscan(self.scanner.runScan)
+        onscan(self.toggleScan)
         self.scanner.newData.connect(self.plotBelt)
         self.scanner.newData.connect(self.recordScan)
         self.scanner.motion.connect(self.plotBelt)
         self.scanner.finished.connect(self.scanFinished)
+        oncenter = self.ui.polargraph.ui.gotocenter.clicked.connect
+        oncenter(self.plotPath)
+        oncenter(self.scanner.moveToCenter)
+        onhome = self.ui.polargraph.ui.gotohome.clicked.connect
+        onhome(self.plotPath)
+        onhome(self.scanner.moveToHome)
 
         ui = self.ui.polargraph.ui
         ui.ell.valueChanged.connect(self.plotPath)
@@ -140,11 +147,13 @@ class Qacam(QMainWindow):
             self.statusBar().showMessage('Scanning ...')
             self.ui.scan.setText('Stop')
 
-    @pyqtSlot()
-    def scanFinished(self):
+    @pyqtSlot(bool)
+    def scanFinished(self, update):
         self.ui.scan.setText('Scan')
         self.ui.scan.setEnabled(True)
         self.ui.controlWidget.setEnabled(True)
+        if not update:
+            return
         d = np.array(self.data)
         x0 = self.scanner.xstart
         x1 = self.scanner.xstop
