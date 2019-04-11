@@ -84,7 +84,8 @@ class QacamScan(QObject):
         npts = yright.size
         rright = list(zip([xstart] * npts, yright))
         rleft = list(zip([xstop] * npts, yleft))
-        coords = [(0, y0), (polargraph.x1.value(), ystart)]
+        coords = [self.polargraph.device.position,
+                  (polargraph.x1.value(), ystart)]
         for i in range(npts):
             coords.append(rright[i])
             coords.append(rleft[i])
