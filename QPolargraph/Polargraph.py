@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from common.SerialDevice import SerialDevice
+from common.QSerialDevice import QSerialDevice
 import numpy as np
 from time import sleep
 
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-class Motors(SerialDevice):
+class Motors(QSerialDevice):
 
     '''
     Abstraction of stepper moters controlled by Arduino
@@ -32,7 +32,7 @@ class Motors(SerialDevice):
     home()
         Equivalent to goto(0, 0)
     release()
-        Stop motors and turn off current to coils.
+        Stop motors and turn off current to windings.
     running() : bool
         Returns True if motors are running.
     '''
@@ -45,7 +45,7 @@ class Motors(SerialDevice):
     def identify(self):
         logger.info('Waiting for Arduino serial port')
         sleep(2)
-        res = self.command('Q')
+        res = self.handshake('Q')
         acam = 'acam2' in res
         logger.info('Arduino running acam2: {}'.format(acam))
         return acam
@@ -60,7 +60,7 @@ class Motors(SerialDevice):
         n2 : int
             Index of motor 2
         '''
-        self.command('G:%d:%d' % (n1, n2))
+        self.handshake('G:%d:%d' % (n1, n2))
 
     def home(self):
         '''Move to home position'''
@@ -68,12 +68,12 @@ class Motors(SerialDevice):
 
     def release(self):
         '''Stop and release motors'''
-        self.command('S')
+        self.handshake('S')
 
     def running(self):
         '''Returns True if motors are running'''
         try:
-            res = self.command('R')
+            res = self.handshake('R')
             header, running = res.split(':')
         except Exception as ex:
             logger.warning('Could not read running status: {}'.format(ex))
@@ -84,7 +84,7 @@ class Motors(SerialDevice):
     def indexes(self):
         '''Current step numbers for motors'''
         try:
-            res = self.command('P')
+            res = self.handshake('P')
             header, n1, n2 = res.split(':')
             n1 = int(n1)
             n2 = int(n2)
@@ -96,13 +96,13 @@ class Motors(SerialDevice):
 
     @indexes.setter
     def indexes(self, n1, n2):
-        self.command('P:%d:%d' % (n1, n2))
+        self.handshake('P:%d:%d' % (n1, n2))
 
     @property
     def motor_speed(self):
         '''Maximum motor speed in steps/sec'''
         try:
-            res = self.command('V')
+            res = self.handshake('V')
             header, speed = res.split(':')
         except Exception as ex:
             logger.warning('Could not read maximum speed: {}'.format(ex))
@@ -111,7 +111,7 @@ class Motors(SerialDevice):
 
     @motor_speed.setter
     def motor_speed(self, speed):
-        res = self.command('V:%f' % speed)
+        res = self.handshake('V:%f' % speed)
         logger.debug('speed: {}'.format(res))
 
 
