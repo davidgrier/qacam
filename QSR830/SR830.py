@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from common.SerialDevice import SerialDevice
+from common.QSerialDevice import QSerialDevice
 import numpy as np
 import re
 
 
-class SR830(SerialDevice):
+class SR830(QSerialDevice):
     '''Abstraction of Stanford Research SR830 Lockin Amplifier
 
     ...
@@ -66,7 +66,7 @@ class SR830(SerialDevice):
         identify : bool
             True if attached instrument is a SR830
         '''
-        idn = self.identification
+        idn = self.send('*IDN?')
         return re.search('SR830', idn)
 
     def busy(self):
@@ -84,23 +84,16 @@ class SR830(SerialDevice):
         return executing or error
 
     # Properties
-
-    @property
-    def identification(self):
-        '''Identification string returned by instrument'''
-        self.write('*IDN?')
-        return self.readln()
-
     # Reference and phase commands
-
     @property
     def phase(self):
         '''Phase offset relative to reference [degrees]'''
-        return np.float(self.command('PHAS?'))
+        return np.float(self.handshake('PHAS?'))
 
     @phase.setter
     def phase(self, value):
-        self.write('PHAS %.2f' % np.clip(float(value), -360., 729.99))
+        v = np.clip(float(value), -360, 729.99)
+        self.send('PHAS {:.2f}'.format(v))
 
     @property
     def source(self):
@@ -108,20 +101,21 @@ class SR830(SerialDevice):
            0: external
            1: internal
         '''
-        return int(self.command('FMOD?'))
+        return int(self.handshake('FMOD?'))
 
     @source.setter
     def source(self, value):
-        self.write('FMOD %d' % np.clip(int(value), 0, 1))
+        self.send('FMOD {}'.format(np.clip(int(value), 0, 1)))
 
     @property
     def frequency(self):
         '''Reference frequency [Hz]'''
-        return float(self.command('FREQ?'))
+        return float(self.handshake('FREQ?'))
 
     @frequency.setter
     def frequency(self, value):
-        self.write('FREQ %f' % np.clip(float(value), 0.001, 102000.))
+        v = np.clip(float(value), 0.001, 102000.)
+        self.send('FREQ {}'.format(v))
 
     @property
     def trigger(self):
@@ -130,29 +124,30 @@ class SR830(SerialDevice):
            1: TTL rising edge
            2: TTL falling edge
         '''
-        return int(self.command('RSLP?'))
+        return int(self.handshake('RSLP?'))
 
     @trigger.setter
     def trigger(self, value):
-        self.write('RSLP %d' % np.clip(int(value), 0, 2))
+        self.send('RSLP {}'.format(np.clip(int(value), 0, 2)))
 
     @property
     def harmonic(self):
         '''Detection harmonic'''
-        return int(self.command('HARM?'))
+        return int(self.handshake('HARM?'))
 
     @harmonic.setter
     def harmonic(self, value):
-        self.write('HARM %d' % np.clip(int(value), 1, 19999))
+        self.send('HARM {}'.format(np.clip(int(value), 1, 19999)))
 
     @property
     def amplitude(self):
         '''Amplitude of sine output [V]'''
-        return float(self.command('SLVL?'))
+        return float(self.handshake('SLVL?'))
 
     @amplitude.setter
     def amplitude(self, value):
-        self.write('SLVL %.3f' % np.clip(float(value), 0.004, 5.))
+        v = np.clip(float(value), 0.004, 5.)
+        self.send('SLVL {:.3f}'.format(v))
 
     # Input and filter commands
     @property
@@ -163,11 +158,11 @@ class SR830(SerialDevice):
            2: I (1 MOhm)
            3: I (100 MOhm)
         '''
-        return int(self.command('ISRC?'))
+        return int(self.handshake('ISRC?'))
 
     @input.setter
     def input(self, value):
-        self.write('ISRC %d' % np.clip(int(value), 0, 3))
+        self.send('ISRC {}'.format(np.clip(int(value), 0, 3)))
 
     @property
     def grounding(self):
@@ -175,11 +170,11 @@ class SR830(SerialDevice):
            0: shield is floating
            1: shield is grounded
         '''
-        return int(self.command('IGND?'))
+        return int(self.handshake('IGND?'))
 
     @grounding.setter
     def grounding(self, value):
-        self.write('IGND %d' % np.clip(int(value), 0, 1))
+        self.send('IGND {}'.format(np.clip(int(value), 0, 1)))
 
     @property
     def coupling(self):
@@ -187,11 +182,11 @@ class SR830(SerialDevice):
            0: AC coupling
            1: DC coupling
         '''
-        return int(self.command('ICPL?'))
+        return int(self.handshake('ICPL?'))
 
     @coupling.setter
     def coupling(self, value):
-        self.write('ICPL %d' % np.clip(int(value), 0, 1))
+        self.send('ICPL {}'.format(np.clip(int(value), 0, 1)))
 
     @property
     def filter(self):
@@ -201,11 +196,11 @@ class SR830(SerialDevice):
            2: 2x line frequency filter
            3: Both notch filters
         '''
-        return int(self.command('ILIN?'))
+        return int(self.handshake('ILIN?'))
 
     @filter.setter
     def filter(self, value):
-        self.write('ILIN %d' % np.clip(int(value), 0, 3))
+        self.send('ILIN {}'.format(np.clip(int(value), 0, 3)))
 
     # Gain and time constant commands
     @property
@@ -226,11 +221,11 @@ class SR830(SerialDevice):
            12: 20 µV/pA   25: 500 mV/nA
                           26: 1 V/µA
         '''
-        return int(self.command('SENS?'))
+        return int(self.handshake('SENS?'))
 
     @sensitivity.setter
     def sensitivity(self, value):
-        self.write('SENS %d' % np.clip(int(value), 0, 26))
+        self.send('SENS {}'.format(np.clip(int(value), 0, 26)))
 
     @property
     def reserve(self):
@@ -239,11 +234,11 @@ class SR830(SerialDevice):
            1: Normal
            2: Low noise (minimum)
         '''
-        return int(self.command('RMOD?'))
+        return int(self.handshake('RMOD?'))
 
     @reserve.setter
     def reserve(self, value):
-        self.write('RMOD %d' % np.clip(int(value), 0, 2))
+        self.send('RMOD {}'.format(np.clip(int(value), 0, 2)))
 
     @property
     def timeConstant(self):
@@ -259,11 +254,11 @@ class SR830(SerialDevice):
            8: 100 ms  18: 10 ks
            9: 300 ms  19: 30 ks
         '''
-        return int(self.command('OFLT?'))
+        return int(self.handshake('OFLT?'))
 
     @timeConstant.setter
     def timeConstant(self, value):
-        self.write('OFLT %d' % np.clip(int(value), 0, 19))
+        self.send('OFLT {}'.format(np.clip(int(value), 0, 19)))
 
     @property
     def slope(self):
@@ -273,11 +268,11 @@ class SR830(SerialDevice):
            2: 18 dB/oct
            3: 24 dB/oct
         '''
-        return int(self.command('OFSL?'))
+        return int(self.handshake('OFSL?'))
 
     @slope.setter
     def slope(self, value):
-        self.write('OFSL %d' % np.clip(int(value), 0, 3))
+        self.send('OFSL {}'.format(np.clip(int(value), 0, 3)))
 
     @property
     def synchronous(self):
@@ -286,11 +281,11 @@ class SR830(SerialDevice):
            0: Off
            1: On
         '''
-        return int(self.command('SYNC?'))
+        return int(self.handshake('SYNC?'))
 
     @synchronous.setter
     def synchronous(self, value):
-        self.write('SYNC %d' % np.clip(int(value), 0, 1))
+        self.send('SYNC {}'.format(np.clip(int(value), 0, 1)))
 
     # Display and output commands
 
@@ -298,38 +293,38 @@ class SR830(SerialDevice):
 
     # Auto functions
     def autoGain(self):
-        self.write('AGAN')
+        self.send('AGAN')
 
     def autoReserve(self):
-        self.write('ARSV')
+        self.send('ARSV')
 
     def autoPhase(self):
-        self.write('APHS')
+        self.send('APHS')
 
     def autoOffset(self, channel):
         c = np.clip(int(channel), 1, 3)
-        self.write('AOFF %d' % c)
+        self.send('AOFF {}'.format(c))
 
     # Data storage commmands
 
     # Data transfer commands
     def x(self):
-        return float(self.command('OUTP?1'))
+        return float(self.handshake('OUTP?1'))
 
     def y(self):
-        return float(self.command('OUTP?2'))
+        return float(self.handshake('OUTP?2'))
 
     def r(self):
-        return float(self.command('OUTP?3'))
+        return float(self.handshake('OUTP?3'))
 
     def theta(self):
-        return float(self.command('OUTP?4'))
+        return float(self.handshake('OUTP?4'))
 
     def channel1(self):
-        return float(self.command('OUTR?1'))
+        return float(self.handshake('OUTR?1'))
 
     def channel2(self):
-        return float(self.command('OUTR?2'))
+        return float(self.handshake('OUTR?2'))
 
     def snap(self, a, b):
         """Return multiple readings simultaneously:
@@ -346,9 +341,8 @@ class SR830(SerialDevice):
            11: Channel 2 display
         NOTE: can obtain up to 6 readings
         """
-        res = self.command('SNAP?%d,%d' %
-                           (np.clip(int(a), 1, 11),
-                            np.clip(int(b), 1, 11)))
+        res = self.handshake('SNAP?{},{}'.format(
+            (np.clip(int(a), 1, 11), np.clip(int(b), 1, 11))))
         va, vb = res.split(',')
         return float(va), float(vb)
 
@@ -359,14 +353,14 @@ class SR830(SerialDevice):
     # Status reporting commands
     def clearStatusRegisters(self):
         '''Clear status regiesters except status enable registers'''
-        self.write('*CLS')
+        self.send('*CLS')
 
     def status(self):
         '''Read status byte'''
-        res = self.command('*STB?')
+        res = self.handshake('*STB?')
         return np.uint8(res)
 
     def error(self):
         '''Read error status byte'''
-        res = self.command('ERRS?')
+        res = self.handshake('ERRS?')
         return np.uint8(res)
