@@ -4,7 +4,7 @@
  *
  * Commands implemented with examples:
  * - V:500 : Set motor speed to 500 steps/second
- * - M:-1000:50 : Move motor 1 to position -1000 and motor 2 to 50
+ * - G:-1000:50 : Move motor 1 to position -1000 and motor 2 to 50
  * - S : Stop (release) motors
  * - Q : Query software ID
  * - P : Query position of motors
