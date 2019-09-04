@@ -196,6 +196,7 @@ class Polargraph(Motors):
         self.width = float(width)
         self.height = float(height)
         self.dy = float(dy)
+        self.busy = self.running
 
     @property
     def ds(self):
@@ -246,7 +247,7 @@ if __name__ == '__main__':
     import sys
 
     app = QApplication(sys.argv)
-    motors = Motors()
+    motors = Polargraph()
     print('Current position: {}'.format(motors.indexes))
     w = QWidget()
     w.show()
