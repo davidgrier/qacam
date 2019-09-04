@@ -40,12 +40,13 @@ class Motors(QSerialDevice):
     def __init__(self):
         super(Motors, self).__init__(eol='\n',
                                      manufacturer='Arduino',
-                                     timeout=1)
+                                     timeout=1000)
 
     def identify(self):
         logger.info('Waiting for Arduino serial port')
         sleep(2)
         res = self.handshake('Q')
+        logger.debug('received: {}'.format(res))
         acam = 'acam2' in res
         logger.info('Arduino running acam2: {}'.format(acam))
         return acam
@@ -238,3 +239,16 @@ class Polargraph(Motors):
     def speed(self, value):
         self.motor_speed = value * (self.steps /
                                     (self.circumference * self.unit))
+
+
+if __name__ == '__main__':
+    from PyQt5.QtWidgets import QApplication, QWidget
+    import sys
+
+    app = QApplication(sys.argv)
+    motors = Motors()
+    print('Current position: {}'.format(motors.indexes))
+    w = QWidget()
+    w.show()
+    motors.close()
+    sys.exit(app.exec_())

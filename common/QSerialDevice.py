@@ -87,13 +87,13 @@ class QSerialDevice(QSerialPort):
             raise ValueError('Could not find serial device')
 
     def setup(self, portinfo):
-        logger.debug('Setting up')
         if portinfo is None:
             logger.info('No serial port specified')
             return False
         name = portinfo.systemLocation()
+        logger.debug(' Setting up {}'.format(name))
         if portinfo.isBusy():
-            logger.debug('Port is busy: {}'.format(name))
+            logger.debug(' Port is busy: {}'.format(name))
             return False
         self.setPort(portinfo)
         self.setBaudRate(self.baudrate)
@@ -101,16 +101,16 @@ class QSerialDevice(QSerialPort):
         self.setParity(self.parity)
         self.setStopBits(self.stopbits)
         if not self.open(QSerialPort.ReadWrite):
-            logger.debug('Could not open port: {}'.format(name))
+            logger.debug(' Could not open port: {}'.format(name))
             return False
         if self.bytesAvailable():
             tmp = self.readAll()
-            logger.info('read {}'.format(tmp))
+            logger.info(' Cleared bytes from device: {}'.format(tmp))
         if self.identify():
-            logger.info('Device found at {}'.format(name))
+            logger.info(' Device found at {}'.format(name))
             return True
         self.close()
-        logger.debug('Device not connected to {}'.format(name))
+        logger.debug(' Device not connected to {}'.format(name))
         return False
 
     def find(self):
@@ -124,7 +124,7 @@ class QSerialDevice(QSerialPort):
         '''
         ports = QSerialPortInfo.availablePorts()
         if len(ports) < 1:
-            logger.warning('No serial ports detected')
+            logger.warning(' No serial ports detected')
             return
         for port in ports:
             portinfo = QSerialPortInfo(port)
@@ -150,7 +150,7 @@ class QSerialDevice(QSerialPort):
 
         Subclasses should override this method
         '''
-        logger.debug('received: {}'.format(data))
+        logger.debug('process: {}'.format(data))
 
     def send(self, data):
         '''
@@ -163,6 +163,7 @@ class QSerialDevice(QSerialPort):
         '''
         cmd = data + self.eol
         self.write(cmd.encode())
+        logger.debug(' Data sent: {}'.format(data))
 
     @pyqtSlot()
     def receive(self):
@@ -173,23 +174,14 @@ class QSerialDevice(QSerialPort):
         until eol character is received, then processes
         the contents of the buffer.
         '''
+        logger.debug(' Data received')
         self.buffer.append(self.readAll())
         if self.buffer.contains(self.eol.encode()):
-            data = bytes(self.buffer).decode()
+            logger.debug(' EOL character received')
+            data = self.buffer.trimmed().data().decode()
             self.dataReady.emit(data)
             self.process(data)
             self.buffer.clear()
-
-    def getc(self):
-        '''
-        Read one character from the serial port
-
-        Returns
-        -------
-        c : bytes
-            utf-8 decoded bytes
-        '''
-        return bytes(self.read(1)).decode('utf8')
 
     def gets(self):
         '''
@@ -200,15 +192,16 @@ class QSerialDevice(QSerialPort):
         s : str
             Decoded string
         '''
-        str = ''
-        char = self.getc()
-        while char != self.eol:
-            str += char
+        while not self.buffer.contains(self.eol.encode()):
             if self.waitForReadyRead(self.timeout):
-                char = self.getc()
+                self.buffer.append(self.readAll())
             else:
+                logger.debug(' gets() timed out')
                 break
-        return str
+        s = self.buffer.trimmed().data().decode()
+        logger.debug(' gets() received {} bytes: {}'.format(len(s), s))
+        self.buffer.clear()
+        return s
 
     def handshake(self, cmd):
         '''
@@ -217,7 +210,7 @@ class QSerialDevice(QSerialPort):
 
         ...
 
-        This form of communication does not use the
+        This form of communication bypasses the
         signal/slot mechanism and thus is blocking.
 
         Arguments
@@ -232,10 +225,7 @@ class QSerialDevice(QSerialPort):
         '''
         self.blockSignals(True)
         self.send(cmd)
-        if self.waitForReadyRead(self.timeout):
-            res = self.gets()
-        else:
-            res = ''
+        res = self.gets()
         self.blockSignals(False)
         return res
 
