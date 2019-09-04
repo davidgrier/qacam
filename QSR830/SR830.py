@@ -2,7 +2,11 @@
 
 from common.QSerialDevice import QSerialDevice
 import numpy as np
-import re
+
+import logging
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class SR830(QSerialDevice):
@@ -54,7 +58,7 @@ class SR830(QSerialDevice):
 
     '''
 
-    def __init__(self, baudrate=9600, timeout=1):
+    def __init__(self, baudrate=9600, timeout=1000):
         super(SR830, self).__init__(baudrate=baudrate,
                                     timeout=timeout)
 
@@ -66,8 +70,11 @@ class SR830(QSerialDevice):
         identify : bool
             True if attached instrument is a SR830
         '''
-        idn = self.send('*IDN?')
-        return re.search('SR830', idn)
+        res = self.handshake('*IDN?')
+        logger.debug(' Received: {}'.format(res))
+        found = 'SR830' in res
+        logger.info(' SR830: {}'.format(found))
+        return found
 
     def busy(self):
         '''Check if instrument is busy
@@ -342,7 +349,8 @@ class SR830(QSerialDevice):
         NOTE: can obtain up to 6 readings
         """
         res = self.handshake('SNAP?{},{}'.format(
-            (np.clip(int(a), 1, 11), np.clip(int(b), 1, 11))))
+            np.clip(int(a), 1, 11),
+            np.clip(int(b), 1, 11)))
         va, vb = res.split(',')
         return float(va), float(vb)
 

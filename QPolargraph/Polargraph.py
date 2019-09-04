@@ -43,12 +43,12 @@ class Motors(QSerialDevice):
                                      timeout=1000)
 
     def identify(self):
-        logger.info('Waiting for Arduino serial port')
+        logger.info(' Waiting for Arduino serial port')
         sleep(2)
         res = self.handshake('Q')
-        logger.debug('received: {}'.format(res))
+        logger.debug(' Received: {}'.format(res))
         acam = 'acam2' in res
-        logger.info('Arduino running acam2: {}'.format(acam))
+        logger.info(' Arduino running acam2: {}'.format(acam))
         return acam
 
     def goto(self, n1, n2):
