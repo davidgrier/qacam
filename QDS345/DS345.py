@@ -6,6 +6,11 @@ import re
 import serial
 from parse import parse
 
+import logging
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 
 class DS345(QSerialDevice):
     '''Abstraction of a Stanford Research DS345 Function Generator
@@ -37,10 +42,10 @@ class DS345(QSerialDevice):
     '''
 
     def __init__(self):
-        super(DS345, self).__init__(baudrate=9600,
-                                    bytesize=serial.EIGHTBITS,
-                                    parity=serial.PARITY_NONE,
-                                    stopbits=serial.STOPBITS_TWO)
+        super(DS345, self).__init__(baudrate=QSerialDevice.Baud9600,
+                                    databits=QSerialDevice.Data8,
+                                    parity=QSerialDevice.NoParity,
+                                    stopbits=QSerialDevice.TwoStop)
         self._mute = False
         self.amplitude = 0.
 
@@ -52,8 +57,14 @@ class DS345(QSerialDevice):
         identify : bool
             True if attached instrument identifies itself as a DS345
         '''
-        idn = self.handshake('*IDN?')
-        return re.search('DS345', idn)
+        res = self.handshake('*IDN?')
+        logger.debug(' Received: {}'.format(res))
+        found = 'DS345' in res
+        logger.info(' DS345: {}'.format(found))
+        return found
+
+    def busy(self):
+        return False
 
     # Properties
     @property

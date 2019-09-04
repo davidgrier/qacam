@@ -352,6 +352,7 @@ class SR830(QSerialDevice):
             np.clip(int(a), 1, 11),
             np.clip(int(b), 1, 11)))
         va, vb = res.split(',')
+        logger.debug('amplitude: {} phase: {}'.format(va, vb))
         return float(va), float(vb)
 
     @property
