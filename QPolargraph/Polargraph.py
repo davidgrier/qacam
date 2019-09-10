@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from common.QSerialDevice import QSerialDevice
 import numpy as np
 from time import sleep
@@ -6,7 +7,7 @@ from time import sleep
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class Motors(QSerialDevice):
@@ -51,6 +52,9 @@ class Motors(QSerialDevice):
         logger.info(' Arduino running acam2: {}'.format(acam))
         return acam
 
+    def process(self, data):
+        logger.debug(' received: {}'.format(data))
+
     def goto(self, n1, n2):
         '''Move to index (n1, n2)
 
@@ -61,7 +65,8 @@ class Motors(QSerialDevice):
         n2 : int
             Index of motor 2
         '''
-        self.handshake('G:%d:%d' % (n1, n2))
+        logger.debug(' goto {} {}'.format(n1, n2))
+        self.send('G:%d:%d' % (n1, n2))
 
     def home(self):
         '''Move to home position'''
@@ -69,7 +74,7 @@ class Motors(QSerialDevice):
 
     def release(self):
         '''Stop and release motors'''
-        self.handshake('S')
+        self.send('S')
 
     def running(self):
         '''Returns True if motors are running'''
@@ -97,7 +102,7 @@ class Motors(QSerialDevice):
 
     @indexes.setter
     def indexes(self, n1, n2):
-        self.handshake('P:%d:%d' % (n1, n2))
+        self.send('P:%d:%d' % (n1, n2))
 
     @property
     def motor_speed(self):
@@ -225,7 +230,8 @@ class Polargraph(Motors):
         x = (s2**2 - s1**2) / (2. * self.ell)
         ysq = (s1**2 + s2**2) / 2. - self.ell**2 / 4. - x**2
         if ysq < 0:
-            print(n1, n2, self.s0, s1, s2, ysq)
+            logger.error('unphysical result: {} {} {} {} {} {}'.format(
+                n1, n2, self.s0, s1, s2, ysq))
             y = self.y0
         else:
             y = np.sqrt(ysq)
@@ -249,7 +255,10 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     motors = Polargraph()
     print('Current position: {}'.format(motors.indexes))
+    motors.goto(0.01, -0.01)
     w = QWidget()
     w.show()
+    while (motors.running):
+        print('.')
     motors.close()
     sys.exit(app.exec_())

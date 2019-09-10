@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from PyQt5.QtCore import pyqtSlot
 from common.QSerialDevice import QSerialDevice
 import numpy as np
 
@@ -70,6 +71,7 @@ class SR830(QSerialDevice):
         identify : bool
             True if attached instrument is a SR830
         '''
+        self.send('OUTX 0')
         res = self.handshake('*IDN?')
         logger.debug(' Received: {}'.format(res))
         found = 'SR830' in res

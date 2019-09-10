@@ -6,7 +6,7 @@ import numpy as np
 
 class QacamScan(QObject):
 
-    '''Scan object ready for threading
+    '''Scan object using signals for thread-safe polling
 
     Compute the path for the polargraph to scan, and then
     perform the scan while reading values from the polargraph
