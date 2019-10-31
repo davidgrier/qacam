@@ -79,6 +79,15 @@ void getset_speed() {
   }
 }
 
+void set_acceleration() {
+  float a;
+  
+  a = atof(&cmd[2]);
+  stepper1.setAcceleration(a);
+  stepper2.setAcceleration(a);
+  Serial.println('A');
+}
+
 void release_motors() {
   motor1->release();
   motor2->release();
@@ -116,6 +125,8 @@ void query_isrunning() {
 /* Dispatch commands */
 void parse_command() {
   switch (cmd[0]) {
+    case 'A':
+      set_acceleration();
     case 'P':
       getset_position();
       break;
