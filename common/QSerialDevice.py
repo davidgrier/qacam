@@ -163,6 +163,7 @@ class QSerialDevice(QSerialPort):
         '''
         cmd = data + self.eol
         self.write(cmd.encode())
+        self.flush()
         logger.debug(' Data sent: {}'.format(data))
 
     @pyqtSlot()

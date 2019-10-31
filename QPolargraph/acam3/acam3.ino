@@ -18,8 +18,8 @@
 #include <Adafruit_MotorShield.h>
 
 Adafruit_MotorShield AFMS(0x60);
-Adafruit_StepperMotor *motor1 = AFMS.getStepper(200, 1);
-Adafruit_StepperMotor *motor2 = AFMS.getStepper(200, 2);
+Adafruit_StepperMotor *motor1 = AFMS.getStepper(200, 2);
+Adafruit_StepperMotor *motor2 = AFMS.getStepper(200, 1);
 
 /* String I/O */
 const int bufsize = 32;
@@ -29,6 +29,7 @@ int len = 0;
 /* flags */
 boolean command_ready = false; // command string received
 boolean is_running = false;    // true if steppers are running
+boolean is_running_1, is_running_2;
 
 /* motor positions (steps) */
 long n1 = 0;
@@ -58,7 +59,7 @@ void set_target() {
   sscanf(cmd, "G:%ld:%ld", &n1, &n2);
   stepper1.moveTo(n1);
   stepper2.moveTo(n2);
-  Serial.println('G');
+  Serial.print('G');
 }
 
 void getset_speed() {
@@ -166,7 +167,9 @@ void loop() {
     if (command_ready) {
       parse_command();
     }
-    is_running = stepper1.run() && stepper2.run();
+    is_running_1 = stepper1.run();
+    is_running_2 = stepper2.run();
+    is_running = is_running_1 && is_running_2;
 }
 
 void serialEvent() {
