@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import (pyqtSlot, pyqtProperty)
 from common.QSerialDevice import QSerialDevice
 import numpy as np
 
@@ -94,7 +94,7 @@ class SR830(QSerialDevice):
 
     # Properties
     # Reference and phase commands
-    @property
+    @pyqtProperty(float)
     def phase(self):
         '''Phase offset relative to reference [degrees]'''
         return np.float(self.handshake('PHAS?'))
@@ -104,7 +104,7 @@ class SR830(QSerialDevice):
         v = np.clip(float(value), -360, 729.99)
         self.send('PHAS {:.2f}'.format(v))
 
-    @property
+    @pyqtProperty(int)
     def source(self):
         '''Reference source:
            0: external
@@ -116,7 +116,7 @@ class SR830(QSerialDevice):
     def source(self, value):
         self.send('FMOD {}'.format(np.clip(int(value), 0, 1)))
 
-    @property
+    @pyqtProperty(float)
     def frequency(self):
         '''Reference frequency [Hz]'''
         return float(self.handshake('FREQ?'))
@@ -126,7 +126,7 @@ class SR830(QSerialDevice):
         v = np.clip(float(value), 0.001, 102000.)
         self.send('FREQ {}'.format(v))
 
-    @property
+    @pyqtProperty(int)
     def trigger(self):
         '''Reference trigger mode for external reference
            0: Sine zero crossing
@@ -139,7 +139,7 @@ class SR830(QSerialDevice):
     def trigger(self, value):
         self.send('RSLP {}'.format(np.clip(int(value), 0, 2)))
 
-    @property
+    @pyqtProperty(int)
     def harmonic(self):
         '''Detection harmonic'''
         return int(self.handshake('HARM?'))
@@ -148,7 +148,7 @@ class SR830(QSerialDevice):
     def harmonic(self, value):
         self.send('HARM {}'.format(np.clip(int(value), 1, 19999)))
 
-    @property
+    @pyqtProperty(float)
     def amplitude(self):
         '''Amplitude of sine output [V]'''
         return float(self.handshake('SLVL?'))
@@ -159,7 +159,7 @@ class SR830(QSerialDevice):
         self.send('SLVL {:.3f}'.format(v))
 
     # Input and filter commands
-    @property
+    @pyqtProperty(int)
     def input(self):
         '''Input configuration:
            0: Input A
@@ -173,7 +173,7 @@ class SR830(QSerialDevice):
     def input(self, value):
         self.send('ISRC {}'.format(np.clip(int(value), 0, 3)))
 
-    @property
+    @pyqtProperty(int)
     def grounding(self):
         '''Input shield grounding mode
            0: shield is floating
@@ -185,7 +185,7 @@ class SR830(QSerialDevice):
     def grounding(self, value):
         self.send('IGND {}'.format(np.clip(int(value), 0, 1)))
 
-    @property
+    @pyqtProperty(int)
     def coupling(self):
         '''Input coupling mode
            0: AC coupling
@@ -197,7 +197,7 @@ class SR830(QSerialDevice):
     def coupling(self, value):
         self.send('ICPL {}'.format(np.clip(int(value), 0, 1)))
 
-    @property
+    @pyqtProperty(int)
     def filter(self):
         '''Input line filter mode
            0: No filters
@@ -212,7 +212,7 @@ class SR830(QSerialDevice):
         self.send('ILIN {}'.format(np.clip(int(value), 0, 3)))
 
     # Gain and time constant commands
-    @property
+    @pyqtProperty(int)
     def sensitivity(self):
         '''Input sensitivity mode
            0 : 2 nV/fA    13: 50 µV/pA
@@ -236,7 +236,7 @@ class SR830(QSerialDevice):
     def sensitivity(self, value):
         self.send('SENS {}'.format(np.clip(int(value), 0, 26)))
 
-    @property
+    @pyqtProperty(int)
     def reserve(self):
         '''Dynamic reserve mode
            0: High reserve
@@ -249,7 +249,7 @@ class SR830(QSerialDevice):
     def reserve(self, value):
         self.send('RMOD {}'.format(np.clip(int(value), 0, 2)))
 
-    @property
+    @pyqtProperty(int)
     def timeConstant(self):
         '''Time constant mode
            0: 10 µs   10: 1 s
@@ -269,7 +269,7 @@ class SR830(QSerialDevice):
     def timeConstant(self, value):
         self.send('OFLT {}'.format(np.clip(int(value), 0, 19)))
 
-    @property
+    @pyqtProperty(int)
     def slope(self):
         '''Low pass filter slope mode
            0: 6 dB/oct
@@ -283,7 +283,7 @@ class SR830(QSerialDevice):
     def slope(self, value):
         self.send('OFSL {}'.format(np.clip(int(value), 0, 3)))
 
-    @property
+    @pyqtProperty(int)
     def synchronous(self):
         '''Synchronous filter mode
            Used if detection frequency is less than 200 Hz
