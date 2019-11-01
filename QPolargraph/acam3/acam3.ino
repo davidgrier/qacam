@@ -18,8 +18,8 @@
 #include <Adafruit_MotorShield.h>
 
 Adafruit_MotorShield AFMS(0x60);
-Adafruit_StepperMotor *motor1 = AFMS.getStepper(200, 2);
-Adafruit_StepperMotor *motor2 = AFMS.getStepper(200, 1);
+Adafruit_StepperMotor *motor1 = AFMS.getStepper(200, 1);
+Adafruit_StepperMotor *motor2 = AFMS.getStepper(200, 2);
 
 /* String I/O */
 const int bufsize = 32;
