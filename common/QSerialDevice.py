@@ -70,7 +70,7 @@ class QSerialDevice(QSerialPort):
                  timeout=1000,
                  **kwargs):
         super(QSerialDevice, self).__init__(parent=parent, **kwargs)
-        self.eol = eol
+        self.eol = eol  # .encode()
         self.manufacturer = manufacturer
         self.baudrate = baudrate
         self.databits = databits
@@ -162,7 +162,7 @@ class QSerialDevice(QSerialPort):
             String to be transferred
         '''
         cmd = data + self.eol
-        self.write(cmd.encode())
+        self.write(cmd)
         self.flush()
         logger.debug(' Data sent: {}'.format(data))
 
@@ -177,9 +177,9 @@ class QSerialDevice(QSerialPort):
         '''
         logger.debug(' Data received')
         self.buffer.append(self.readAll())
-        if self.buffer.contains(self.eol.encode()):
+        if self.buffer.contains(self.eol):
             logger.debug(' EOL character received')
-            data = self.buffer.trimmed().data().decode()
+            data = self.buffer.trimmed().data()  # .decode()
             self.dataReady.emit(data)
             self.process(data)
             self.buffer.clear()
@@ -193,13 +193,13 @@ class QSerialDevice(QSerialPort):
         s : str
             Decoded string
         '''
-        while not self.buffer.contains(self.eol.encode()):
+        while not self.buffer.contains(self.eol):
             if self.waitForReadyRead(self.timeout):
                 self.buffer.append(self.readAll())
             else:
                 logger.debug(' gets() timed out')
                 break
-        s = self.buffer.trimmed().data().decode()
+        s = self.buffer.trimmed().data()  # .decode()
         logger.debug(' gets() received {} bytes: {}'.format(len(s), s))
         self.buffer.clear()
         return s
