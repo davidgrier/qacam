@@ -7,7 +7,7 @@ import numpy as np
 import logging
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 class SR830(QSerialDevice):
