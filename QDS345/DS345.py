@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from PyQt5.QtCore import pyqtProperty
 from common.QSerialDevice import QSerialDevice
 import numpy as np
 import re
@@ -67,7 +68,7 @@ class DS345(QSerialDevice):
         return False
 
     # Properties
-    @property
+    @pyqtProperty(bool)
     def mute(self):
         '''Output muted'''
         return self._mute
@@ -82,7 +83,7 @@ class DS345(QSerialDevice):
             self.amplitude = self._amplitude
 
     # Function output adjustable properties
-    @property
+    @pyqtProperty(float)
     def amplitude(self):
         '''Output amplitude [Vpp]'''
         if self.mute:
@@ -96,7 +97,7 @@ class DS345(QSerialDevice):
         if not self._mute:
             self.send('AMPL {:.2f}VP'.format(self._amplitude))
 
-    @property
+    @pyqtProperty(float)
     def frequency(self):
         '''Output frequency [Hz]'''
         return float(self.handshake('FREQ?'))
@@ -105,7 +106,7 @@ class DS345(QSerialDevice):
     def frequency(self, value):
         self.send('FREQ {:.4f}'.format(float(value)))
 
-    @property
+    @pyqtProperty(float)
     def offset(self):
         '''Output offset [V]'''
         return float(self.handshake('OFFS?'))
@@ -114,7 +115,7 @@ class DS345(QSerialDevice):
     def offset(self, value):
         self.send('OFFS {:.2f}'.format(float(value)))
 
-    @property
+    @pyqtProperty(float)
     def phase(self):
         '''Output phase [degrees]'''
         return float(self.handshake('PHSE?'))
@@ -123,7 +124,7 @@ class DS345(QSerialDevice):
     def phase(self, value):
         self.send('PHSE {:.2f}'.format(float(value)))
 
-    @property
+    @pyqtProperty(int)
     def waveform(self):
         '''Output waveform
            0: sine
@@ -139,7 +140,7 @@ class DS345(QSerialDevice):
     def waveform(self, value):
         self.send('FUNC {}'.format(np.clip(int(value), 0, 5)))
 
-    @property
+    @pyqtProperty(int)
     def invert(self):
         return int(self.handshake('INVT?'))
 
