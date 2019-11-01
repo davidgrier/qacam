@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from PyQt5.QtCore import pyqtProperty
 from common.QSerialDevice import QSerialDevice
 import numpy as np
 from time import sleep
@@ -87,7 +88,7 @@ class Motors(QSerialDevice):
             running = 0
         return bool(int(running))
 
-    @property
+    @pyqtProperty(int, int)
     def indexes(self):
         '''Current step numbers for motors'''
         try:
@@ -105,7 +106,7 @@ class Motors(QSerialDevice):
     def indexes(self, n1, n2):
         self.send('P:%d:%d' % (n1, n2))
 
-    @property
+    @pyqtProperty(float)
     def motor_speed(self):
         '''Maximum motor speed in steps/sec'''
         try:
@@ -204,12 +205,12 @@ class Polargraph(Motors):
         self.dy = float(dy)
         self.busy = self.running
 
-    @property
+    @pyqtProperty(float)
     def ds(self):
         '''Distance traveled per step [m]'''
         return 1e-3 * self.unit * self.circumference / self.steps
 
-    @property
+    @pyqtProperty(float)
     def s0(self):
         '''Distance from motor to payload at home position [m]'''
         return np.sqrt((self.ell / 2.)**2 + (self.y0)**2)
@@ -222,7 +223,7 @@ class Polargraph(Motors):
         n2 = np.rint((self.s0 - s2) / self.ds).astype(int)
         super(Polargraph, self).goto(n1, n2)
 
-    @property
+    @pyqtProperty(float, float)
     def position(self):
         '''Current coordinates in meters'''
         n1, n2 = self.indexes
@@ -238,7 +239,7 @@ class Polargraph(Motors):
             y = np.sqrt(ysq)
         return x, y
 
-    @property
+    @pyqtProperty(float)
     def speed(self):
         '''Translation speed in mm/s'''
         return self.motor_speed * self.circumference * self.unit / self.steps
