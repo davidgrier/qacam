@@ -71,9 +71,9 @@ class Qacam(QMainWindow):
         self.scanner = QacamScan(polargraph=self.ui.polargraph,
                                  source=self.ui.functionGenerator,
                                  lockin=self.ui.lockin)
-        #self.thread = QThread()
-        #self.thread.start()
-        #self.scanner.moveToThread(self.thread)
+        self.thread = QThread()
+        self.thread.start()
+        self.scanner.moveToThread(self.thread)
 
     def connectSignals(self):
         onscan = self.ui.scan.clicked.connect
