@@ -368,10 +368,10 @@ class SR830(QSerialDevice):
 
     def status(self):
         '''Read status byte'''
-        res = self.handshake('*STB?')
+        res = self.handshake('*STB?', raw=True)
         return np.uint8(res)
 
     def error(self):
         '''Read error status byte'''
-        res = self.handshake('ERRS?')
+        res = self.handshake('ERRS?', raw=True)
         return np.uint8(res)

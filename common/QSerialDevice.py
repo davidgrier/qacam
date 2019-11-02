@@ -46,9 +46,6 @@ class QSerialDevice(QSerialPort):
     send(cmd)
         Write cmd to serial device with eol termination.
         Response is handled by call to process().
-    process(data)
-        Process data returned by device.
-        Subclasses should override this method.
     handshake(cmd) : str
         Write cmd to serial device and return response.
 
@@ -70,7 +67,7 @@ class QSerialDevice(QSerialPort):
                  timeout=1000,
                  **kwargs):
         super(QSerialDevice, self).__init__(parent=parent, **kwargs)
-        self.eol = eol  # .encode()
+        self.eol = eol
         self.manufacturer = manufacturer
         self.baudrate = baudrate
         self.databits = databits
@@ -144,14 +141,6 @@ class QSerialDevice(QSerialPort):
         '''
         return True
 
-    def process(self, data):
-        '''
-        Process data received from device
-
-        Subclasses should override this method
-        '''
-        logger.debug('process: {}'.format(data))
-
     def send(self, data):
         '''
         Write string to serial device with eol termination
@@ -162,7 +151,7 @@ class QSerialDevice(QSerialPort):
             String to be transferred
         '''
         cmd = data + self.eol
-        self.write(cmd)
+        self.write(cmd.encode())
         self.flush()
         logger.debug(' Data sent: {}'.format(data))
 
@@ -184,7 +173,7 @@ class QSerialDevice(QSerialPort):
             self.process(data)
             self.buffer.clear()
 
-    def gets(self):
+    def gets(self, raw=False):
         '''
         Read characters from the serial port until eol is received
 
@@ -199,12 +188,15 @@ class QSerialDevice(QSerialPort):
             else:
                 logger.debug(' gets() timed out')
                 break
-        s = self.buffer.trimmed().data()  # .decode()
+        if raw:
+            s = self.buffer.trimmed().data()
+        else:
+            s = self.buffer.trimmed().data().decode()
         logger.debug(' gets() received {} bytes: {}'.format(len(s), s))
         self.buffer.clear()
         return s
 
-    def handshake(self, cmd):
+    def handshake(self, cmd, raw=False):
         '''
         Send command string to device and return the
         response from the device
@@ -226,7 +218,7 @@ class QSerialDevice(QSerialPort):
         '''
         self.blockSignals(True)
         self.send(cmd)
-        res = self.gets()
+        res = self.gets(raw)
         self.blockSignals(False)
         return res
 
