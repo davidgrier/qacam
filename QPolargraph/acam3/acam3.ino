@@ -180,13 +180,13 @@ void loop() {
     }
     is_running_1 = stepper1.run();
     is_running_2 = stepper2.run();
-    is_running = is_running_1 && is_running_2;
+    is_running = is_running_1 or is_running_2;
 }
 
 void serialEvent() {
   char c;
 
-  if (Serial.available() > 0 && command_ready == false) {
+  if ((Serial.available() > 0) or (command_ready == false)) {
     c = Serial.read();
     if (c == '\n') {
       cmd[len] = '\0';
