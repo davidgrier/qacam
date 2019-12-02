@@ -3,8 +3,6 @@
 from PyQt5.QtCore import pyqtProperty
 from common.QSerialDevice import QSerialDevice
 import numpy as np
-import re
-import serial
 from parse import parse
 
 import logging
