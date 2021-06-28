@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtCore import pyqtProperty
-from common.QSerialDevice import QSerialDevice
+from qacam.common.QSerialDevice import QSerialDevice
 import numpy as np
 from time import sleep
 
