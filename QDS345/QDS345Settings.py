@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from common.QSettingsWidget import QSettingsWidget
+from qacam.common.QSettingsWidget import QSettingsWidget
 from .DS345Settings_UI import Ui_DS345Settings
 
 
@@ -19,7 +19,7 @@ class QDS345Settings(QSettingsWidget):
 if __name__ == '__main__':
     from PyQt5.QtWidgets import QApplication
     import sys
-    from DS345 import DS345
+    from .DS345 import DS345
 
     app = QApplication(sys.argv)
     try:
